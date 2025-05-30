@@ -1,0 +1,19 @@
+{
+  "name": "job-portal",
+  "version": "1.0.0",
+  "description": "This is my final year project names as JOB PORTAL where recruiter and jobseekers can come and get information about jobs like recruiter can post a job and jobseeker can apply for a job additionally we have added a free resume builder in our app where you just need to enter few details about your portfolio and a resume will be made for you",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.4",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4"
+  }
+}
