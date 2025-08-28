@@ -1,8 +1,75 @@
+// src/pages/MyApplications.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 2.5rem auto;
+  padding: 0 1rem;
+`;
+
+const Title = styled.h2`
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937; // gray-800
+`;
+
+const ErrorText = styled.p`
+  color: #ef4444; // red-500
+  margin-bottom: 1rem;
+`;
+
+const List = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const ListItem = styled.li`
+  border: 1px solid #d1d5db; // gray-300
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #f9fafb; // gray-50
+`;
+
+const ResumeLink = styled.a`
+  color: #3b82f6; // blue-500
+  text-decoration: underline;
+  display: block;
+  margin-top: 0.25rem;
+`;
+
+const Button = styled.button`
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+
+  ${(props) =>
+    props.variant === "edit"
+      ? `
+    background-color: #f59e0b; // yellow-500
+    &:hover { background-color: #d97706; } // yellow-600
+  `
+      : `
+    background-color: #dc2626; // red-600
+    &:hover { background-color: #b91c1c; } // red-700
+  `}
+`;
+
+const ButtonGroup = styled.div`
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.75rem;
+`;
 
 const MyApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -14,9 +81,7 @@ const MyApplications = () => {
       const res = await axios.get(
         "http://localhost:5000/api/applications/mine",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setApplications(res.data.applications);
@@ -37,9 +102,7 @@ const MyApplications = () => {
       await axios.delete(
         `http://localhost:5000/api/applications/${applicationId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert("Application deleted");
@@ -57,17 +120,16 @@ const MyApplications = () => {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto mt-10">
-        <h2 className="text-2xl font-bold mb-6">My Applications</h2>
-
-        {error && <p className="text-red-500">{error}</p>}
+      <Container>
+        <Title>My Applications</Title>
+        {error && <ErrorText>{error}</ErrorText>}
 
         {applications.length === 0 ? (
           <p>You haven't applied to any jobs yet.</p>
         ) : (
-          <ul className="space-y-4">
+          <List>
             {applications.map((app) => (
-              <li key={app._id} className="border p-4 rounded">
+              <ListItem key={app._id}>
                 <p>
                   <strong>Job:</strong> {app.title} at {app.company}
                 </p>
@@ -78,7 +140,6 @@ const MyApplications = () => {
                   <strong>Message:</strong> {app.message}
                 </p>
 
-                {/* ✅ Extracted skills if present */}
                 {app.extractedSkills && app.extractedSkills.length > 0 && (
                   <p>
                     <strong>Extracted Skills:</strong>{" "}
@@ -91,33 +152,25 @@ const MyApplications = () => {
                   {new Date(app.appliedAt).toLocaleString()}
                 </p>
 
-                <a
+                <ResumeLink
                   href={`http://localhost:5000/${app.resume}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 underline block mt-1"
                 >
                   Download Resume
-                </a>
+                </ResumeLink>
 
-                <div className="mt-3 space-x-3">
+                <ButtonGroup>
                   <Link to={`/applications/edit/${app._id}`}>
-                    <button className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
-                      Edit
-                    </button>
+                    <Button variant="edit">Edit</Button>
                   </Link>
-                  <button
-                    onClick={() => handleDelete(app._id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
+                  <Button onClick={() => handleDelete(app._id)}>Delete</Button>
+                </ButtonGroup>
+              </ListItem>
             ))}
-          </ul>
+          </List>
         )}
-      </div>
+      </Container>
       <Footer />
     </>
   );

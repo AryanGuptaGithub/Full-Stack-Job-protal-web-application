@@ -1,189 +1,230 @@
+// ✅ FILE: src/pages/JobDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { FaLaptopCode } from "react-icons/fa";
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
+import { IoLocationOutline } from "react-icons/io5";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
+import styled from "styled-components";
 import {
-    BriefcaseIcon,
-    MapPinIcon,
-    CurrencyDollarIcon,
-    DocumentPlusIcon,
-    EyeIcon,
-    PencilSquareIcon, // Import the edit icon
-    TrashIcon, // Import the delete icon
+  BriefcaseIcon,
+  MapPinIcon,
+  CurrencyDollarIcon,
+  DocumentPlusIcon,
+  EyeIcon,
+  PencilSquareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 
+const Container = styled.div`
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+`;
+
+const Title = styled.h1`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #1f2937;
+`;
+
+const Info = styled.p`
+  font-size: 1.125rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const Description = styled.div`
+  margin: 1.5rem 0;
+`;
+
+const Button = styled.button`
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  border: none;
+  margin-right: 0.5rem;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const ApplyButton = styled(Button)`
+  background-color: #3b82f6;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: #2563eb;
+  }
+`;
+
+const EditButton = styled(Button)`
+  background-color: #f59e0b;
+  color: white;
+
+  &:hover {
+    background-color: #b45309;
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #ef4444;
+  color: white;
+
+  &:hover {
+    background-color: #b91c1c;
+  }
+`;
+
+const ViewButton = styled(Button)`
+  background-color: #10b981;
+  color: white;
+
+  &:hover {
+    background-color: #047857;
+  }
+`;
+
 const JobDetails = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [job, setJob] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const token = localStorage.getItem("jwt");
+  const storedUser = JSON.parse(localStorage.getItem("user"));
 
-        if (!token) {
-            navigate("/login");
-            return;
-        }
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-        const fetchJob = async () => {
-            try {
-                const response = await axios.get(
-                    `http://localhost:5000/api/jobs/${id}`
-                );
-                setJob(response.data);
-            } catch (err) {
-                setError("Job not found.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchJob();
-    }, [id, navigate]);
-
-    const handleApply = async () => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (!storedUser) {
-            toast.warn("Please log in to apply.");
-            navigate("/login");
-            return;
-        }
-
-        try {
-            const formData = new FormData();
-            formData.append("message", "Looking forward to this role!");
-            const dummyFile = new File(["Dummy Resume"], "resume.pdf", {
-                type: "application/pdf",
-            });
-            formData.append("resume", dummyFile);
-            formData.append("applicant", storedUser._id);
-
-            const response = await axios.post(
-                `http://localhost:5000/api/applications/${job._id}`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-
-            toast.success(
-                response.data.message || "Application submitted successfully!"
-            );
-            console.log("JOB Applied Successfully", response.data);
-        } catch (err) {
-            console.error(err);
-            toast.error(err.response?.data?.message || "Failed to apply.");
-        }
+    const fetchJob = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/jobs/${id}`);
+        setJob(response.data);
+      } catch (err) {
+        setError("Job not found.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const handleEditJob = () => {
-        navigate(`/edit-job/${job._id}`); // Navigate to the edit job page
-    };
+    fetchJob();
+  }, [id, navigate]);
 
-    const handleDeleteJob = async () => {
-        if (window.confirm("Are you sure you want to delete this job?")) {
-            try {
-                await axios.delete(`http://localhost:5000/api/jobs/${job._id}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                    },
-                });
-                toast.success("Job deleted successfully!");
-                navigate("/recruiter/dashboard"); // Redirect to recruiter dashboard after deletion
-            } catch (error) {
-                console.error("Error deleting job:", error);
-                toast.error(
-                    error.response?.data?.message || "Failed to delete job."
-                );
-            }
+  const handleApply = async () => {
+    if (!storedUser) {
+      toast.warn("Please log in to apply.");
+      navigate("/login");
+      return;
+    }
+
+    if (storedUser.role === "recruiter") {
+      toast.error("Recruiters cannot apply to jobs.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("message", "Looking forward to this role!");
+      const dummyFile = new File(["Dummy Resume"], "resume.pdf", { type: "application/pdf" });
+      formData.append("resume", dummyFile);
+      formData.append("applicant", storedUser._id);
+
+      const response = await axios.post(
+        `http://localhost:5000/api/applications/${job._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
-    };
+      );
 
-    if (loading)
-        return (
-            <div className="container mx-auto mt-10 text-center">
-                <p>Loading job details...</p>
-            </div>
-        );
-    if (error)
-        return (
-            <div className="container mx-auto mt-10 text-center text-red-500">
-                <p>{error}</p>
-            </div>
-        );
+      toast.success(response.data.message || "Application submitted successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Failed to apply.");
+    }
+  };
 
-    return (
-        <>
-            <Navbar />
-            <div className="container mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">{job.title}</h1>
+  const handleEditJob = () => navigate(`/edit-job/${job._id}`);
 
-                <div className="mb-4">
-                    <p className="text-lg text-gray-700 flex items-center mb-1">
-                        <BriefcaseIcon className="h-5 w-5 mr-2 text-blue-500" />
-                        <strong>Company:</strong> {job.company}
-                    </p>
-                    <p className="text-lg text-gray-700 flex items-center mb-1">
-                        <MapPinIcon className="h-5 w-5 mr-2 text-green-500" />
-                        <strong>Location:</strong> {job.location}
-                    </p>
-                    <p className="text-lg text-gray-700 flex items-center">
-                        <CurrencyDollarIcon className="h-5 w-5 mr-2 text-yellow-500" />
-                        <strong>Salary:</strong> ₹{job.salary}
-                    </p>
-                </div>
+  const handleDeleteJob = async () => {
+    if (window.confirm("Are you sure you want to delete this job?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/jobs/${job._id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        });
+        toast.success("Job deleted successfully!");
+        navigate("/recruiter/dashboard");
+      } catch (err) {
+        console.error("Error deleting job:", err);
+        toast.error(err.response?.data?.message || "Failed to delete job.");
+      }
+    }
+  };
 
-                <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                        Description
-                    </h2>
-                    <p className="text-gray-700 leading-relaxed">{job.description}</p>
-                </div>
+  if (loading) return <p style={{ textAlign: "center", marginTop: "2rem" }}>Loading job details...</p>;
+  if (error) return <p style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>{error}</p>;
 
-                <button
-                    onClick={handleApply}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
-                >
-                    <DocumentPlusIcon className="h-5 w-5 mr-2" />
-                    Apply Now
-                </button>
+  const isRecruiterOwner = storedUser?.role === "recruiter" && storedUser._id === job.postedBy;
 
-                {/* ✅ Show only if recruiter and they posted the job */}
-                {JSON.parse(localStorage.getItem("user"))?.role === "recruiter" &&
-                    JSON.parse(localStorage.getItem("user"))._id === job.postedBy && (
-                        <div className="mt-4 flex space-x-2">
-                            <Link to={`/applications/${job._id}`} className="inline-block">
-                                <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center">
-                                    <EyeIcon className="h-5 w-5 mr-2" />
-                                    View Applications
-                                </button>
-                            </Link>
-                            <button
-                                onClick={handleEditJob}
-                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
-                            >
-                                <PencilSquareIcon className="h-5 w-5 mr-2" />
-                                Edit Job
-                            </button>
-                            <button
-                                onClick={handleDeleteJob}
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
-                            >
-                                <TrashIcon className="h-5 w-5 mr-2" />
-                                Delete Job
-                            </button>
-                        </div>
-                    )}
-            </div>
-            <Footer />
-        </>
-    );
+  return (
+    <>
+      <Navbar />
+      <Container>
+        <Title >{job.title}</Title>
+        <Info><FaLaptopCode size={40} /> <strong> Company: </strong> &nbsp; { job.company}</Info>
+        <Info><IoLocationOutline size={40} /> <strong> Location: </strong> &nbsp; {job.location}</Info>
+        <Info><RiMoneyRupeeCircleFill size={40} /> <strong> Salary: </strong> &nbsp;  {job.salary ? `₹${job.salary}` : "Not specified"}</Info>
+
+        <Description>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem" }}>Description</h2>
+          <p>{job.description}</p>
+        </Description>
+
+        <ApplyButton onClick={handleApply} disabled={storedUser?.role === "recruiter"}>
+          <DocumentPlusIcon className="h-5 w-5" /> Apply Now
+        </ApplyButton>
+
+        {isRecruiterOwner && (
+          <div style={{ marginTop: "1rem", display: "flex" }}>
+            <Link to={`/applications/${job._id}`}><ViewButton><EyeIcon className="h-5 w-5" /> View Applications</ViewButton></Link>
+            <EditButton onClick={handleEditJob}><PencilSquareIcon className="h-5 w-5" /> Edit Job</EditButton>
+            <DeleteButton onClick={handleDeleteJob}><TrashIcon className="h-5 w-5" /> Delete Job</DeleteButton>
+          </div>
+        )}
+      </Container>
+      <Footer />
+    </>
+  );
 };
 
 export default JobDetails;

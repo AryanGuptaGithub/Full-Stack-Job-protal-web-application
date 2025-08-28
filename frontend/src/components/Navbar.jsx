@@ -1,5 +1,7 @@
+// src/components/Navbar.jsx
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import {useAuth} from "../context/AuthContext";
 import {
   BriefcaseIcon,
   UserIcon,
@@ -8,10 +10,145 @@ import {
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
+import styled from "styled-components";
+
+// Styled Components
+const Nav = styled.nav`
+  background-color: #1f2937;
+  color: white;
+  padding: 1rem;
+`;
+
+const Container = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Logo = styled(Link)`
+  font-size: 1.25rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+
+  svg {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.5rem;
+    color: #818cf8;
+  }
+`;
+
+const DesktopMenu = styled.div`
+  display: none;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    display: flex;
+  }
+`;
+
+const NavLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: #c4b5fd;
+  }
+
+  svg {
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-right: 0.25rem;
+  }
+`;
+
+const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  color: white;
+  background-color: ${(props) => props.bg || "#4f46e5"};
+
+  &:hover {
+    background-color: ${(props) => props.hover || "#4338ca"};
+  }
+
+  svg {
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-right: 0.25rem;
+  }
+`;
+
+const MobileMenuButton = styled.button`
+  color: #d1d5db;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
+const MobileMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #374151;
+  padding: 0.5rem 0;
+
+  a,
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #4b5563;
+    }
+
+    svg {
+      height: 1.25rem;
+      width: 1.25rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const {isAuthenticated, logout} = useAuth();
 
   useEffect(() => {
     const tokenData = localStorage.getItem("user");
@@ -25,121 +162,109 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold flex items-center">
-          <BriefcaseIcon className="h-6 w-6 mr-2 text-indigo-400" />
+    <Nav>
+      <Container>
+        <Logo to="/">
+          <BriefcaseIcon />
           JobPortal
-        </Link>
+        </Logo>
 
-        {/* Desktop Navigation (using flex for layout) */}
-        <div className="hidden md:flex space-x-6">
-          <Link
-            to="/jobs"
-            className="hover:text-indigo-300 transition duration-200 ease-in-out flex items-center"
-          >
-            <BriefcaseIcon className="h-5 w-5 mr-1" />
+        <DesktopMenu>
+          <NavLink to="/jobs">
+            <BriefcaseIcon />
             Jobs
-          </Link>
+          </NavLink>
           {user?.role === "jobseeker" && (
             <>
-              <Link
-                to="/my-applications"
-                className="hover:text-indigo-300 transition duration-200 ease-in-out flex items-center"
-              >
-                <ClipboardDocumentListIcon className="h-5 w-5 mr-1" />
+              <NavLink to="/my-applications">
+                <ClipboardDocumentListIcon />
                 My Applications
-              </Link>
-              <Link
-                to="/dashboard"
-                className="hover:text-indigo-300 transition duration-200 ease-in-out flex items-center"
-              >
-                <UserIcon className="h-5 w-5 mr-1" />
+              </NavLink>
+              <NavLink to="/dashboard">
+                <UserIcon />
                 Dashboard
-              </Link>
-              <Link
-                to="/edit-profile"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition duration-200 ease-in-out flex items-center"
-              >
-                <CogIcon className="h-5 w-5 mr-1" />
+              </NavLink>
+              <ActionButton bg="#4f46e5" hover="#4338ca" as={Link} to="/edit-profile">
+                <CogIcon />
                 Edit Profile
-              </Link>
-              <button
+              </ActionButton>
+
+              {!isAuthenticated && ( 
+                 <ActionButton
+                bg="#dc2626"
+                hover="#b91c1c"
                 onClick={() => {
                   localStorage.removeItem("user");
                   window.location.reload();
+             
                 }}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition duration-200 ease-in-out flex items-center"
               >
-                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" />
+                <ArrowRightOnRectangleIcon />
                 Logout
-              </button>
+              </ActionButton>
+               )}
+             
+
             </>
           )}
           {user?.role === "recruiter" && (
-            <Link
-              to="/recruiter-dashboard"
-              className="hover:text-indigo-300 transition duration-200 ease-in-out flex items-center"
-            >
-              <UserIcon className="h-5 w-5 mr-1" />
+            <NavLink to="/recruiter-dashboard">
+              <UserIcon />
               Dashboard
-            </Link>
+            </NavLink>
           )}
-          <Link
-            to="/login"
-            className="hover:text-indigo-300 transition duration-200 ease-in-out flex items-center"
-          >
-            <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" />
+          {!isAuthenticated && (
+             <Link to="/login">
+              <ActionButton bg="#4f46e5" hover="#4338ca" >
+            <ArrowRightOnRectangleIcon />
             Login
+            </ActionButton>
           </Link>
-        </div>
+          )}
+           <ActionButton bg="#dc2626" hover="#b91c1c" 
+                onClick={() => { localStorage.removeItem("user")
+                  window.location.reload();
+                }}> 
+                <ArrowRightOnRectangleIcon />
+                Logout
+              </ActionButton>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button
-            onClick={toggleMobileMenu}
-            className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-          >
-            {isMobileMenuOpen ? (
-              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            )}
-          </button>
-        </div>
-      </div>
 
-      {/* Mobile Menu (using block for stacking, flex for icon alignment) */}
+           
+
+
+
+
+
+
+        </DesktopMenu>
+
+
+
+
+        <MobileMenuButton onClick={toggleMobileMenu}>
+          {isMobileMenuOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
+        </MobileMenuButton>
+      </Container>
+
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gray-700 py-2">
-          <Link
-            to="/jobs"
-            className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
-          >
-            <BriefcaseIcon className="h-5 w-5 mr-2" />
+        <MobileMenu>
+          <Link to="/jobs">
+            <BriefcaseIcon />
             Jobs
           </Link>
           {user?.role === "jobseeker" && (
             <>
-              <Link
-                to="/my-applications"
-                className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
-              >
-                <ClipboardDocumentListIcon className="h-5 w-5 mr-2" />
+              <Link to="/my-applications">
+                <ClipboardDocumentListIcon />
                 My Applications
               </Link>
-              <Link
-                to="/dashboard"
-                className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
-              >
-                <UserIcon className="h-5 w-5 mr-2" />
+              <Link to="/dashboard">
+                <UserIcon />
                 Dashboard
               </Link>
-              <Link
-                to="/edit-profile"
-                className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
-              >
-                <CogIcon className="h-5 w-5 mr-2" />
+              <Link to="/edit-profile">
+                <CogIcon />
                 Edit Profile
               </Link>
               <button
@@ -147,32 +272,28 @@ const Navbar = () => {
                   localStorage.removeItem("user");
                   window.location.reload();
                 }}
-                className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
               >
-                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />
+                <ArrowRightOnRectangleIcon />
                 Logout
               </button>
             </>
           )}
           {user?.role === "recruiter" && (
-            <Link
-              to="/recruiter-dashboard"
-              className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
-            >
-              <UserIcon className="h-5 w-5 mr-2" />
+            <Link to="/recruiter-dashboard">
+              <UserIcon />
               Dashboard
             </Link>
           )}
-          <Link
-            to="/login"
-            className="block py-2 px-4 hover:bg-gray-600 transition duration-200 ease-in-out flex items-center"
-          >
-            <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />
+          {!isAuthenticated && (
+             <Link to="/login">
+            <ArrowRightOnRectangleIcon />
             Login
           </Link>
-        </div>
+          )}
+         
+        </MobileMenu>
       )}
-    </nav>
+    </Nav>
   );
 };
 

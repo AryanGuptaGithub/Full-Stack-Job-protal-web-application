@@ -1,3 +1,4 @@
+// src/pages/RecruiterDashboard.jsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -7,7 +8,113 @@ import {
   BriefcaseIcon,
   UserIcon,
   PlusCircleIcon,
-} from "@heroicons/react/24/outline"; // Import some cool icons
+} from "@heroicons/react/24/outline";
+import styled from "styled-components";
+
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  padding: 2.5rem 0;
+  background: linear-gradient(to bottom right, #f3f4f6, #dbeafe); // gray-100 to blue-50
+`;
+
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+`;
+
+const CardWrapper = styled.div`
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+`;
+
+const Title = styled.h1`
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #1f2937; // gray-800
+  margin-bottom: 1.5rem;
+`;
+
+const SubTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937; // gray-800
+  margin-bottom: 1rem;
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+`;
+
+const DashboardLink = styled(Link)`
+  background-color: ${(props) =>
+    props.bgcolor ? props.bgcolor : "#f3f4f6"}; // default gray-50
+  color: ${(props) => (props.color ? props.color : "#1e3a8a")}; // default blue-700
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    background-color: ${(props) => (props.hover ? props.hover : "#e0f2fe")};
+  }
+`;
+
+const JobList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const JobItem = styled.li`
+  background-color: #f9fafb; // gray-50
+  border: 1px solid #e5e7eb; // gray-200
+  padding: 1rem;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease-in-out;
+  &:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const JobTitle = styled.h3`
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e40af; // blue-700
+  margin-bottom: 0.25rem;
+`;
+
+const JobInfo = styled.p`
+  color: #374151; // gray-700
+  margin-bottom: 0.25rem;
+  strong {
+    font-weight: 600;
+  }
+`;
+
+const ViewApplicationsLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  color: #3b82f6; // blue-500
+  margin-top: 0.5rem;
+  transition: color 0.2s ease-in-out;
+  &:hover {
+    color: #1e40af; // blue-700
+  }
+  svg {
+    margin-right: 0.25rem;
+  }
+`;
 
 const RecruiterDashboard = () => {
   const [user, setUser] = useState({});
@@ -21,9 +128,7 @@ const RecruiterDashboard = () => {
       try {
         const token = localStorage.getItem("jwt");
         const res = await axios.get("http://localhost:5000/api/jobs", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         const postedJobs = res.data.filter(
           (job) => job.postedBy === storedUser._id
@@ -40,79 +145,68 @@ const RecruiterDashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-gradient-to-br from-gray-100 to-blue-50 min-h-screen py-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-6">
-              👋 Welcome, <span className="text-blue-600">{user?.username || "Recruiter"}</span>!
-            </h1>
+      <PageWrapper>
+        <Container>
+          <CardWrapper>
+            <Title>
+              👋 Welcome,{" "}
+              <span style={{ color: "#2563eb" }}>{user?.username || "Recruiter"}</span>!
+            </Title>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Link
+            <Grid>
+              <DashboardLink
                 to="/jobs"
-                className="bg-blue-50 hover:bg-blue-100 text-blue-700 shadow rounded-lg p-6 flex flex-col items-center justify-center transition-shadow duration-300 ease-in-out"
+                bgcolor="#eff6ff"
+                color="#1d4ed8"
+                hover="#dbeafe"
               >
                 <BriefcaseIcon className="h-10 w-10 mb-2" />
-                <h2 className="text-xl font-semibold mb-1 text-center">📢 All Jobs</h2>
-                <p className="text-gray-600 text-sm text-center">
-                  Browse your posted jobs or others in the system.
-                </p>
-              </Link>
+                <h2>📢 All Jobs</h2>
+                <p>Browse your posted jobs or others in the system.</p>
+              </DashboardLink>
 
-              <Link
+              <DashboardLink
                 to="/edit-profile"
-                className="bg-yellow-50 hover:bg-yellow-100 text-yellow-700 shadow rounded-lg p-6 flex flex-col items-center justify-center transition-shadow duration-300 ease-in-out"
+                bgcolor="#fef3c7"
+                color="#b45309"
+                hover="#fef9c3"
               >
                 <UserIcon className="h-10 w-10 mb-2" />
-                <h2 className="text-xl font-semibold mb-1 text-center">👤 Edit Profile</h2>
-                <p className="text-gray-600 text-sm text-center">
-                  Update your information and company profile.
-                </p>
-              </Link>
+                <h2>👤 Edit Profile</h2>
+                <p>Update your information and company profile.</p>
+              </DashboardLink>
 
-              <Link
+              <DashboardLink
                 to="/create-job"
-                className="bg-green-50 hover:bg-green-100 text-green-700 shadow rounded-lg p-6 flex flex-col items-center justify-center transition-shadow duration-300 ease-in-out"
+                bgcolor="#dcfce7"
+                color="#15803d"
+                hover="#bbf7d0"
               >
                 <PlusCircleIcon className="h-10 w-10 mb-2" />
-                <h2 className="text-xl font-semibold mb-1 text-center">➕ Post New Job</h2>
-                <p className="text-gray-600 text-sm text-center">
-                  Open up a new opportunity for job seekers.
-                </p>
-              </Link>
-            </div>
-          </div>
+                <h2>➕ Post New Job</h2>
+                <p>Open up a new opportunity for job seekers.</p>
+              </DashboardLink>
+            </Grid>
+          </CardWrapper>
 
-          <div className="bg-white shadow-lg rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              📂 Your Posted Jobs
-            </h2>
+          <CardWrapper>
+            <SubTitle>📂 Your Posted Jobs</SubTitle>
             {jobs.length === 0 ? (
-              <p className="text-gray-600">You haven't posted any jobs yet.</p>
+              <p style={{ color: "#4b5563" }}>You haven't posted any jobs yet.</p>
             ) : (
-              <ul className="space-y-4">
+              <JobList>
                 {jobs.map((job) => (
-                  <li
-                    key={job._id}
-                    className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-300 ease-in-out"
-                  >
-                    <h3 className="text-lg font-semibold text-blue-700 mb-1">
-                      {job.title}
-                    </h3>
-                    <p className="text-gray-700 mb-1">
-                      <strong className="font-semibold">Company:</strong>{" "}
-                      {job.company}
-                    </p>
-                    <p className="text-gray-700 mb-2">
-                      <strong className="font-semibold">Location:</strong>{" "}
-                      {job.location}
-                    </p>
-                    <Link
-                      to={`/applications/${job._id}`}
-                      className="inline-flex items-center text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out"
-                    >
+                  <JobItem key={job._id}>
+                    <JobTitle>{job.title}</JobTitle>
+                    <JobInfo>
+                      <strong>Company:</strong> {job.company}
+                    </JobInfo>
+                    <JobInfo>
+                      <strong>Location:</strong> {job.location}
+                    </JobInfo>
+                    <ViewApplicationsLink to={`/applications/${job._id}`}>
                       <svg
-                        className="h-5 w-5 mr-1"
+                        className="h-5 w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -131,14 +225,14 @@ const RecruiterDashboard = () => {
                         />
                       </svg>
                       View Applications
-                    </Link>
-                  </li>
+                    </ViewApplicationsLink>
+                  </JobItem>
                 ))}
-              </ul>
+              </JobList>
             )}
-          </div>
-        </div>
-      </div>
+          </CardWrapper>
+        </Container>
+      </PageWrapper>
       <Footer />
     </>
   );

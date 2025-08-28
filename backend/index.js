@@ -17,6 +17,7 @@ import { fileURLToPath } from "url";
 dotenv.config();
 const app = express();
 const upload = multer();
+app.use(express.json()); // Parse JSON request bodies
 app.use(upload.any());
 app.use(
   cors({

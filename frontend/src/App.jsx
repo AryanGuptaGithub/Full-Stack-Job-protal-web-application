@@ -1,5 +1,6 @@
 // ✅ FILE: frontend/src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Home from "./pages/Home";
 import Jobs from "./pages/Jobs";
 import JobDetails from "./pages/JobDetails";
@@ -18,11 +19,15 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import Register from "./pages/Register";
 import CreateJob from "./pages/CreateJob";
 import EditJob from "./pages/EditJob";
+import { AuthProvider } from "./context/AuthContext";
+
 
 const App = () => {
+ 
   return (
     <Router>
       <ToastContainer position="top-right" autoClose={3000} />
+    <AuthProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/jobs" element={<Jobs />} />
@@ -50,6 +55,7 @@ const App = () => {
         <Route path="/create-job" element={<CreateJob />} />
         <Route path="/register" element={<Register />} />
       </Routes>
+  </AuthProvider>
     </Router>
   );
 };

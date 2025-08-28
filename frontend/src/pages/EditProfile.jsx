@@ -1,10 +1,132 @@
 // src/pages/EditProfile.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
 import { UserIcon, EnvelopeIcon, DocumentIcon, LockClosedIcon, CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import styled from "styled-components";
+
+// Styled Components
+const PageWrapper = styled.div`
+  background-color: #f3f4f6;
+  min-height: 100vh;
+  padding: 3rem 0;
+`;
+
+const Container = styled.div`
+  max-width: 28rem;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+`;
+
+const Title = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-left: 0.5rem;
+`;
+
+const Alert = styled.div`
+  position: relative;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid ${({ type }) => (type === "error" ? "#f87171" : "#4ade80")};
+  background-color: ${({ type }) => (type === "error" ? "#fee2e2" : "#d1fae5")};
+  color: ${({ type }) => (type === "error" ? "#b91c1c" : "#065f46")};
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+const FieldWrapper = styled.div`
+  position: relative;
+`;
+
+const Label = styled.label`
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  display: block;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+  }
+`;
+
+const Textarea = styled.textarea`
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  resize: vertical;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+  }
+`;
+
+const IconWrapper = styled.div`
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #9ca3af;
+  height: 1.25rem;
+  width: 1.25rem;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #2563eb;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+  }
+`;
 
 const EditProfile = () => {
     const [user, setUser] = useState({ username: "", email: "" });
@@ -18,54 +140,35 @@ const EditProfile = () => {
 
     useEffect(() => {
       const fetchProfile = async () => {
-        console.log("➡️ Starting fetchProfile...");
         try {
             const token = localStorage.getItem("jwt");
-            console.log("🔑 JWT Token:", token);
-            const res = await axios.get("http://localhost:5000/api/", { // Changed the URL here
+            const res = await axios.get("http://localhost:5000/api/", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log("✅ Profile fetch successful:", res.data);
             const userData = res.data;
             setUser({ username: userData.username, email: userData.email });
             setExistingResume(userData.resume || "");
             setLoading(false);
         } catch (err) {
-            console.error("❌ Failed to load profile:", err);
             setError("Failed to load profile");
             setLoading(false);
-        } finally {
-            console.log("⬅️ fetchProfile completed.");
         }
-    };
-        fetchProfile();
+      };
+      fetchProfile();
     }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setSuccessMessage("");
-      
         try {
             const token = localStorage.getItem("jwt");
-            console.log("🔑 JWT Token for update:", token);
             const formData = new FormData();
             formData.append("username", user.username);
             formData.append("email", user.email);
-            if (resume) {
-                console.log("📎 New resume attached:", resume.name);
-                formData.append("resume", resume);
-            } else {
-                console.log("📄 No new resume selected.");
-            }
-            if (password) {
-                console.log("🔒 New password provided.");
-                formData.append("password", password);
-            } else {
-                console.log("🔒 No new password provided.");
-            }
+            if (resume) formData.append("resume", resume);
+            if (password) formData.append("password", password);
 
-            console.log("📤 Sending update request with FormData:", formData);
             const res = await axios.put("http://localhost:5000/api/profile/update", formData, { 
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -73,144 +176,59 @@ const EditProfile = () => {
                 },
             });
 
-            console.log("✅ Profile update successful:", res.data);
             setSuccessMessage("Profile updated successfully!");
-            localStorage.setItem("user", JSON.stringify(res.data.updatedUser)); // Update user info in local storage
-            setTimeout(() => {
-                navigate("/dashboard");
-            }, 1500); // Redirect after a short delay
+            localStorage.setItem("user", JSON.stringify(res.data.updatedUser));
+            setTimeout(() => navigate("/dashboard"), 1500);
         } catch (err) {
-            console.error("❌ Update error:", err);
             setError(err.response?.data?.message || "Failed to update profile");
-        } finally {
-            console.log("⬅️ handleSubmit completed.");
         }
     };
 
-    if (loading) return <div className="text-center mt-10"><p>Loading profile information...</p></div>;
+    if (loading) return <PageWrapper><p style={{textAlign:"center"}}>Loading profile information...</p></PageWrapper>;
 
     return (
         <>
             <Navbar />
-            <div className="bg-gray-100 min-h-screen py-12">
-                <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-8">
-                    <div className="flex items-center justify-center mb-6">
+            <PageWrapper>
+                <Container>
+                    <Header>
                         <UserIcon className="h-10 w-10 text-blue-500 mr-2" />
-                        <h2 className="text-2xl font-bold text-gray-800">Edit Profile</h2>
-                    </div>
+                        <Title>Edit Profile</Title>
+                    </Header>
 
-                    {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <strong className="font-bold">Error!</strong>
-                            <span className="block sm:inline">{error}</span>
-                            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                                <ExclamationCircleIcon className="h-6 w-6 fill-current" />
-                            </span>
-                        </div>
-                    )}
+                    {error && <Alert type="error"><ExclamationCircleIcon style={{width:"1.25rem", position:"absolute", right:"0.5rem", top:"50%", transform:"translateY(-50%)"}} />{error}</Alert>}
+                    {successMessage && <Alert type="success"><CheckCircleIcon style={{width:"1.25rem", position:"absolute", right:"0.5rem", top:"50%", transform:"translateY(-50%)"}} />{successMessage}</Alert>}
 
-                    {successMessage && (
-                        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <strong className="font-bold">Success!</strong>
-                            <span className="block sm:inline">{successMessage}</span>
-                            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                                <CheckCircleIcon className="h-6 w-6 fill-current" />
-                            </span>
-                        </div>
-                    )}
+                    <Form onSubmit={handleSubmit}>
+                        <FieldWrapper>
+                            <Label>Username</Label>
+                            <IconWrapper><UserIcon /></IconWrapper>
+                            <Input type="text" value={user.username} onChange={(e) => setUser({ ...user, username: e.target.value })} required />
+                        </FieldWrapper>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Username
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                                    <UserIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    value={user.username}
-                                    onChange={(e) => setUser({ ...user, username: e.target.value })}
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                    required
-                                />
-                            </div>
-                        </div>
+                        <FieldWrapper>
+                            <Label>Email</Label>
+                            <IconWrapper><EnvelopeIcon /></IconWrapper>
+                            <Input type="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} required />
+                        </FieldWrapper>
 
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                                    <EnvelopeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={user.email}
-                                    onChange={(e) => setUser({ ...user, email: e.target.value })}
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                    required
-                                />
-                            </div>
-                        </div>
+                        <FieldWrapper>
+                            <Label>New Resume</Label>
+                            {existingResume && <p style={{fontSize:"0.875rem", color:"#6b7280", marginBottom:"0.25rem"}}>Current Resume: {existingResume.split("/").pop()}</p>}
+                            <IconWrapper><DocumentIcon /></IconWrapper>
+                            <Input type="file" onChange={(e) => setResume(e.target.files[0])} accept=".pdf,.doc,.docx" />
+                        </FieldWrapper>
 
-                        <div>
-                            <label htmlFor="resume" className="block text-sm font-medium text-gray-700">
-                                New Resume
-                            </label>
-                            {existingResume && (
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Current Resume: {existingResume.split("/").pop()}
-                                </p>
-                            )}
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                                    <DocumentIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="file"
-                                    id="resume"
-                                    onChange={(e) => setResume(e.target.files[0])}
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                    accept=".pdf,.doc,.docx"
-                                />
-                            </div>
-                        </div>
+                        <FieldWrapper>
+                            <Label>New Password</Label>
+                            <IconWrapper><LockClosedIcon /></IconWrapper>
+                            <Input type="password" placeholder="Leave blank to keep same" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        </FieldWrapper>
 
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                New Password
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                                    <LockClosedIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Leave blank to keep same"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <button
-                                type="submit"
-                                className="w-full bg-blue-600 text-white py-3 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                                Save Changes
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                        <Button type="submit">Save Changes</Button>
+                    </Form>
+                </Container>
+            </PageWrapper>
             <Footer />
         </>
     );

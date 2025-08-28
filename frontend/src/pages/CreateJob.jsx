@@ -14,6 +14,134 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
+import styled from "styled-components";
+
+// Styled Components
+const Container = styled.div`
+  max-width: 668px;
+  margin: 3rem auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+`;
+
+const PageHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  svg {
+    height: 2.5rem;
+    width: 2.5rem;
+    color: #3b82f6;
+    margin-right: 0.5rem;
+  }
+`;
+
+const Alert = styled.div`
+  background-color: ${(props) =>
+    props.type === "error" ? "#fee2e2" : "#d1fae5"};
+  border: 1px solid
+    ${(props) => (props.type === "error" ? "#fca5a5" : "#34d399")};
+  color: ${(props) => (props.type === "error" ? "#b91c1c" : "#065f46")};
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  position: relative;
+
+  svg {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+
+  .input-container {
+    position: relative;
+
+    svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      height: 1.25rem;
+      width: 1.25rem;
+    }
+
+    input,
+    textarea {
+      width: 85%;
+      padding: 1rem 2rem 1rem 3rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      outline: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+      &:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+    }
+  }
+`;
+
+const SubmitButton = styled.button`
+  width: 100%;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    background-color: #1d4ed8;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.5);
+  }
+`;
 
 const CreateJob = () => {
   const [formData, setFormData] = useState({
@@ -36,20 +164,23 @@ const CreateJob = () => {
     }));
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
     try {
       const token = localStorage.getItem("jwt");
-      const response = await axios.post("http://localhost:5000/api/jobs/create", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/jobs/create",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      if (response.status === 200) { // Check for a 200 status
+      if (response.status === 200) {
         setSuccessMessage("Job posted successfully!");
         setFormData({
           title: "",
@@ -58,14 +189,11 @@ const CreateJob = () => {
           salary: "",
           category: "",
           description: "",
-        }); // Clear form
-        setTimeout(() => {
-          navigate("/jobs");
-        }, 1500);
+        });
+        setTimeout(() => navigate("/jobs"), 1500);
       } else {
         setError("Failed to post job: Server responded with an error.");
       }
-
     } catch (err) {
       console.error("Failed to post job", err);
       setError(
@@ -78,57 +206,30 @@ const CreateJob = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-gray-100 min-h-screen py-12">
-        <div className="container mx-auto max-w-2xl bg-white shadow-md rounded-lg p-8">
-          <div className="flex items-center justify-center mb-6">
-            <BriefcaseIcon className="h-10 w-10 text-blue-500 mr-2" />
-            <h2 className="text-2xl font-bold text-gray-800">
-              Create a New Job
-            </h2>
-          </div>
+      <div style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", padding: "3rem 0" }}>
+        <Container>
+          <PageHeader>
+            <BriefcaseIcon />
+            <h2>Create a New Job</h2>
+          </PageHeader>
 
           {error && (
-            <div
-              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
-            >
-              <strong className="font-bold">Error!</strong>
-              <span className="block sm:inline">{error}</span>
-              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                <ExclamationCircleIcon className="h-6 w-6 fill-current" />
-              </span>
-            </div>
+            <Alert type="error">
+              <strong>Error!</strong> {error} <ExclamationCircleIcon />
+            </Alert>
           )}
 
           {successMessage && (
-            <div
-              className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
-            >
-              <strong className="font-bold">Success!</strong>
-              <span className="block sm:inline">{successMessage}</span>
-              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                <CheckCircleIcon className="h-6 w-6 fill-current" />
-              </span>
-            </div>
+            <Alert type="success">
+              <strong>Success!</strong> {successMessage} <CheckCircleIcon />
+            </Alert>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Form fields... */}
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Job Title
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <BriefcaseIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </div>
+          <Form onSubmit={handleSubmit}>
+            <FieldWrapper>
+              <label htmlFor="title">Job Title</label>
+              <div className="input-container">
+                <BriefcaseIcon />
                 <input
                   type="text"
                   name="title"
@@ -136,26 +237,15 @@ const CreateJob = () => {
                   placeholder="e.g., Software Engineer"
                   value={formData.title}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   required
                 />
               </div>
-            </div>
+            </FieldWrapper>
 
-            <div>
-              <label
-                htmlFor="company"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Company Name
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <BuildingOfficeIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </div>
+            <FieldWrapper>
+              <label htmlFor="company">Company Name</label>
+              <div className="input-container">
+                <BuildingOfficeIcon />
                 <input
                   type="text"
                   name="company"
@@ -163,26 +253,15 @@ const CreateJob = () => {
                   placeholder="e.g., Tech Innovations Inc."
                   value={formData.company}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   required
                 />
               </div>
-            </div>
+            </FieldWrapper>
 
-            <div>
-              <label
-                htmlFor="location"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Location
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <MapPinIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </div>
+            <FieldWrapper>
+              <label htmlFor="location">Location</label>
+              <div className="input-container">
+                <MapPinIcon />
                 <input
                   type="text"
                   name="location"
@@ -190,26 +269,15 @@ const CreateJob = () => {
                   placeholder="e.g., Mumbai, India"
                   value={formData.location}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   required
                 />
               </div>
-            </div>
+            </FieldWrapper>
 
-            <div>
-              <label
-                htmlFor="salary"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Salary (₹)
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <CurrencyDollarIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </div>
+            <FieldWrapper>
+              <label htmlFor="salary">Salary (₹)</label>
+              <div className="input-container">
+                <CurrencyDollarIcon />
                 <input
                   type="number"
                   name="salary"
@@ -217,26 +285,15 @@ const CreateJob = () => {
                   placeholder="e.g., 50000"
                   value={formData.salary}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   required
                 />
               </div>
-            </div>
+            </FieldWrapper>
 
-            <div>
-              <label
-                htmlFor="category"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Category
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <TagIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </div>
+            <FieldWrapper>
+              <label htmlFor="category">Category</label>
+              <div className="input-container">
+                <TagIcon />
                 <input
                   type="text"
                   name="category"
@@ -244,26 +301,15 @@ const CreateJob = () => {
                   placeholder="e.g., IT, HR, Finance"
                   value={formData.category}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   required
                 />
               </div>
-            </div>
+            </FieldWrapper>
 
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Job Description
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <DocumentTextIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </div>
+            <FieldWrapper>
+              <label htmlFor="description">Job Description</label>
+              <div className="input-container">
+                <DocumentTextIcon />
                 <textarea
                   name="description"
                   id="description"
@@ -271,22 +317,14 @@ const CreateJob = () => {
                   value={formData.description}
                   onChange={handleChange}
                   rows="6"
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   required
                 />
               </div>
-            </div>
+            </FieldWrapper>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Post Job
-              </button>
-            </div>
-          </form>
-        </div>
+            <SubmitButton type="submit">Post Job</SubmitButton>
+          </Form>
+        </Container>
       </div>
       <Footer />
     </>

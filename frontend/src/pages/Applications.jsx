@@ -3,6 +3,114 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { DocumentArrowDownIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import styled from "styled-components";
+
+// Styled Components
+const Container = styled.div`
+  max-width: 800px;
+  margin: 2.5rem auto;
+  padding: 1.5rem;
+`;
+
+const PageTitle = styled.h2`
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+
+  span {
+    color: #2563eb;
+  }
+`;
+
+const Alert = styled.div`
+  background-color: ${(props) =>
+    props.type === "error" ? "#fee2e2" : "#fef3c7"};
+  border: 1px solid ${(props) =>
+    props.type === "error" ? "#fca5a5" : "#fcd34d"};
+  color: ${(props) => (props.type === "error" ? "#b91c1c" : "#b45309")};
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+`;
+
+const ApplicationCard = styled.li`
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+`;
+
+const Field = styled.div`
+  margin-bottom: 0.75rem;
+
+  strong {
+    color: #374151;
+    font-weight: 600;
+  }
+
+  span, p {
+    color: ${(props) => props.gray ? "#4b5563" : "#2563eb"};
+    font-weight: ${(props) => (props.gray ? "400" : "500")};
+  }
+`;
+
+const SkillsContainer = styled.div`
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+const SkillBadge = styled.span`
+  background-color: #d1fae5;
+  color: #065f46;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+`;
+
+const ActionGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  a, button {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+
+    svg {
+      height: 1.25rem;
+      width: 1.25rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  a:hover, button:hover {
+    text-decoration: underline;
+  }
+
+  a:first-child {
+    color: #2563eb;
+  }
+
+  a:nth-child(2) {
+    color: #ca8a04;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: #dc2626;
+    padding: 0;
+  }
+`;
 
 const Applications = () => {
   const { jobId } = useParams();
@@ -57,78 +165,69 @@ const Applications = () => {
     }
   };
 
-  if (error) return <div className="container mx-auto mt-10 p-6 bg-red-100 border border-red-400 text-red-700 rounded"><p>{error}</p></div>;
+  if (error) return <Alert type="error"><p>{error}</p></Alert>;
 
   return (
-    <div className="container mx-auto mt-10 p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
-        Applications for: <span className="text-blue-600">{jobTitle}</span>
-      </h2>
+    <Container>
+      <PageTitle>
+        Applications for: <span>{jobTitle}</span>
+      </PageTitle>
 
       {applications.length === 0 ? (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Info!</strong>
-          <span className="block sm:inline">No applications received for this job yet.</span>
-        </div>
+        <Alert type="info">
+          <strong>Info!</strong> <span>No applications received for this job yet.</span>
+        </Alert>
       ) : (
-        <ul className="space-y-6">
+        <ul>
           {applications.map((app) =>
             app?._id ? (
-              <li key={app._id} className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                <div className="mb-3">
-                  <strong className="text-gray-700 font-semibold">Name:</strong>{" "}
-                  <span className="text-blue-500">{app.applicant?.username || "N/A"}</span>
-                </div>
-                <div className="mb-3">
-                  <strong className="text-gray-700 font-semibold">Email:</strong>{" "}
-                  <span className="text-gray-600">{app.applicant?.email || "N/A"}</span>
-                </div>
-                <div className="mb-3">
-                  <strong className="text-gray-700 font-semibold">Message:</strong>{" "}
-                  <p className="text-gray-600">{app.message || "No message provided."}</p>
-                </div>
+              <ApplicationCard key={app._id}>
+                <Field>
+                  <strong>Name:</strong>{" "}
+                  <span>{app.applicant?.username || "N/A"}</span>
+                </Field>
+                <Field gray>
+                  <strong>Email:</strong>{" "}
+                  <span>{app.applicant?.email || "N/A"}</span>
+                </Field>
+                <Field gray>
+                  <strong>Message:</strong>{" "}
+                  <p>{app.message || "No message provided."}</p>
+                </Field>
 
                 {app.extractedSkills && app.extractedSkills.length > 0 && (
-                  <div className="mb-3">
-                    <strong className="text-gray-700 font-semibold">Extracted Skills:</strong>{" "}
-                    <span className="inline-flex space-x-2">
-                      {app.extractedSkills.map((skill, index) => (
-                        <span key={index} className="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
-                          {skill}
-                        </span>
-                      ))}
-                    </span>
-                  </div>
+                  <SkillsContainer>
+                    <strong>Extracted Skills:</strong>{" "}
+                    {app.extractedSkills.map((skill, index) => (
+                      <SkillBadge key={index}>{skill}</SkillBadge>
+                    ))}
+                  </SkillsContainer>
                 )}
 
-                <div className="flex items-center space-x-4 mt-4">
+                <ActionGroup>
                   <a
                     href={`http://localhost:5000/${app.resume}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-500 hover:underline"
                   >
-                    <DocumentArrowDownIcon className="h-5 w-5 mr-1" />
+                    <DocumentArrowDownIcon />
                     Download Resume
                   </a>
-                  <Link to={`/applications/edit/${app._id}`} className="inline-flex items-center text-yellow-500 hover:underline">
-                    <PencilIcon className="h-5 w-5 mr-1" />
+                  <Link to={`/applications/edit/${app._id}`}>
+                    <PencilIcon />
                     Edit
                   </Link>
-                  <button
-                    onClick={() => handleDelete(app._id)}
-                    className="inline-flex items-center text-red-500 hover:underline"
-                  >
-                    <TrashIcon className="h-5 w-5 mr-1" />
+                  <button onClick={() => handleDelete(app._id)}>
+                    <TrashIcon />
                     Delete
                   </button>
-                </div>
-              </li>
+                </ActionGroup>
+              </ApplicationCard>
             ) : null
           )}
         </ul>
       )}
-    </div>
+    </Container>
   );
 };
 

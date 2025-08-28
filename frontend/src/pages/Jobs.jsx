@@ -1,9 +1,97 @@
+// ✅ FILE: src/pages/Jobs.jsx
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import JobCard from "../components/JobCard";
 import { getJobs } from "../services/api";
-import { MagnifyingGlassIcon, FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import styled from "styled-components";
+
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
+const Title = styled.h1`
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #1f2937;
+`;
+
+const Button = styled.button`
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const FilterButton = styled(Button)`
+  background-color: #eff6ff;
+  color: #3b82f6;
+
+  &:hover {
+    background-color: #dbeafe;
+  }
+`;
+
+const ClearButton = styled(Button)`
+  background-color: #e5e7eb;
+  color: #374151;
+
+  &:hover {
+    background-color: #d1d5db;
+  }
+`;
+
+const FilterContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+
+  @media(min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+`;
+
+const Input = styled.input`
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+`;
+
+const JobGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media(min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media(min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -38,93 +126,46 @@ const Jobs = () => {
     );
   });
 
-  const toggleFilter = () => {
-    setIsFilterOpen(!isFilterOpen);
-  };
-
+  const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
   const clearFilters = () => {
-    setCategory("");
-    setLocation("");
-    setMinSalary("");
-    setMaxSalary("");
-    setIsFilterOpen(false);
+    setCategory(""); setLocation(""); setMinSalary(""); setMaxSalary(""); setIsFilterOpen(false);
   };
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto mt-10 p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">Available Jobs</h1>
-          <button
-            onClick={toggleFilter}
-            className="bg-blue-50 hover:bg-blue-100 text-blue-500 font-semibold py-2 px-4 rounded-full flex items-center transition duration-200 ease-in-out"
-          >
-            <FunnelIcon className="h-5 w-5 mr-2" />
-            Filter
-          </button>
-        </div>
+      <Container>
+        <Header>
+          <Title>Available Jobs</Title>
+          <FilterButton onClick={toggleFilter}>
+            <FunnelIcon className="h-5 w-5" /> Filter
+          </FilterButton>
+        </Header>
 
         {isFilterOpen && (
-          <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-white shadow-md rounded-lg p-4">
-            <input
-              type="text"
-              placeholder="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              placeholder="Min Salary"
-              value={minSalary}
-              onChange={(e) => setMinSalary(e.target.value)}
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              placeholder="Max Salary"
-              value={maxSalary}
-              onChange={(e) => setMaxSalary(e.target.value)}
-              className="border p-2 rounded"
-            />
-            <div className="md:col-span-4 flex justify-end">
-              <button
-                onClick={clearFilters}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-full flex items-center transition duration-200 ease-in-out"
-              >
-                <XMarkIcon className="h-5 w-5 mr-2" />
-                Clear Filters
-              </button>
+          <FilterContainer>
+            <Input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+            <Input type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
+            <Input type="number" placeholder="Min Salary" value={minSalary} onChange={(e) => setMinSalary(e.target.value)} />
+            <Input type="number" placeholder="Max Salary" value={maxSalary} onChange={(e) => setMaxSalary(e.target.value)} />
+            <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'flex-end' }}>
+              <ClearButton onClick={clearFilters}><XMarkIcon className="h-5 w-5" /> Clear Filters</ClearButton>
             </div>
-          </div>
+          </FilterContainer>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <JobGrid>
           {loading ? (
-            <div className="col-span-full text-center py-8">
-              <p>Loading jobs...</p>
-            </div>
+            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem' }}>Loading jobs...</p>
           ) : error ? (
-            <div className="col-span-full text-center py-8 text-red-500">
-              <p>{error}</p>
-            </div>
+            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: 'red' }}>{error}</p>
           ) : filteredJobs.length > 0 ? (
             filteredJobs.map((job) => <JobCard key={job._id} {...job} />)
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-600">
-              <p>No jobs match your criteria.</p>
-            </div>
+            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: '#6b7280' }}>No jobs match your criteria.</p>
           )}
-        </div>
-      </div>
+        </JobGrid>
+      </Container>
       <Footer />
     </>
   );

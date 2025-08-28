@@ -1,13 +1,148 @@
-// ✅ FILE 3: src/pages/AdminDashboard.jsx
+// src/pages/AdminDashboard.jsx
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import axios from "axios";
-import {
-  UserGroupIcon,
-  BriefcaseIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { UserGroupIcon, BriefcaseIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import styled from "styled-components";
+
+// Styled Components
+const PageWrapper = styled.div`
+  background: linear-gradient(to bottom right, #f9fafb, #fafafa);
+  min-height: 100vh;
+  padding: 2.5rem 0;
+`;
+
+const Container = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+`;
+
+const PageTitle = styled.h1`
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+
+  svg {
+    height: 2rem;
+    width: 2rem;
+    color: #8b5cf6;
+    margin-right: 0.5rem;
+  }
+`;
+
+const Alert = styled.div`
+  position: relative;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+
+  strong {
+    font-weight: 700;
+  }
+
+  svg {
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    fill: currentColor;
+  }
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media(min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+const Card = styled.div`
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+`;
+
+const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  svg {
+    height: 2rem;
+    width: 2rem;
+    margin-right: 0.75rem;
+    color: ${(props) => props.iconColor || "#000"};
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+`;
+
+const List = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+`;
+
+const ListItem = styled.li`
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+
+  span:first-child {
+    color: #374151;
+  }
+
+  span:last-child {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #ede9fe;
+    color: #6b21a8;
+  }
+`;
+
+const JobListItem = styled.li`
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+
+  p:first-child {
+    font-weight: 600;
+    color: #374151;
+  }
+
+  p:last-child {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+`;
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -17,15 +152,8 @@ const AdminDashboard = () => {
   const fetchAdminData = async () => {
     try {
       const token = localStorage.getItem("jwt");
-      const usersRes = await axios.get(
-        "http://localhost:5000/api/admin/users",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const jobsRes = await axios.get("http://localhost:5000/api/admin/jobs", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const usersRes = await axios.get("http://localhost:5000/api/admin/users", { headers: { Authorization: `Bearer ${token}` }});
+      const jobsRes = await axios.get("http://localhost:5000/api/admin/jobs", { headers: { Authorization: `Bearer ${token}` }});
 
       setUsers(usersRes.data.users);
       setJobs(jobsRes.data.jobs);
@@ -42,86 +170,55 @@ const AdminDashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-gradient-to-br from-gray-50 to-zinc-100 min-h-screen py-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-6">
-            <span className="text-purple-600">
-              <svg
-                className="inline h-8 w-8 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4.354l-2.169 3.04a4 4 0 01-2.121 1.414l-3.04-2.169A4 4 0 014.354 12l3.04 2.169a4 4 0 011.414 2.121l-2.169 3.04A4 4 0 0112 19.646l2.169-3.04a4 4 0 012.121-1.414l3.04 2.169A4 4 0 0119.646 12l-3.04-2.169a4 4 0 01-1.414-2.121l2.169-3.04A4 4 0 0112 4.354z"
-                />
-              </svg>
-            </span>
+      <PageWrapper>
+        <Container>
+          <PageTitle>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354l-2.169 3.04a4 4 0 01-2.121 1.414l-3.04-2.169A4 4 0 014.354 12l3.04 2.169a4 4 0 011.414 2.121l-2.169 3.04A4 4 0 0112 19.646l2.169-3.04a4 4 0 012.121-1.414l3.04 2.169A4 4 0 0119.646 12l-3.04-2.169a4 4 0 01-1.414-2.121l2.169-3.04A4 4 0 0112 4.354z" />
+            </svg>
             Admin Dashboard
-          </h1>
+          </PageTitle>
+
           {error && (
-            <div
-              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
-            >
-              <strong className="font-bold">Error!</strong>
-              <span className="block sm:inline">{error}</span>
-              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                <ExclamationCircleIcon className="h-6 w-6 fill-current" />
-              </span>
-            </div>
+            <Alert role="alert">
+              <strong>Error!</strong> <span>{error}</span>
+              <ExclamationCircleIcon />
+            </Alert>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <div className="flex items-center mb-4">
-                <UserGroupIcon className="h-8 w-8 text-purple-500 mr-3" />
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Users ({users.length})
-                </h2>
-              </div>
-              <ul className="space-y-3">
+          <Grid>
+            <Card>
+              <CardHeader iconColor="#a78bfa">
+                <UserGroupIcon />
+                <h2>Users ({users.length})</h2>
+              </CardHeader>
+              <List>
                 {users.map((user) => (
-                  <li
-                    key={user._id}
-                    className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between"
-                  >
-                    <span className="text-gray-700">{user.username}</span>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                      {user.role}
-                    </span>
-                  </li>
+                  <ListItem key={user._id}>
+                    <span>{user.username}</span>
+                    <span>{user.role}</span>
+                  </ListItem>
                 ))}
-              </ul>
-            </div>
+              </List>
+            </Card>
 
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <div className="flex items-center mb-4">
-                <BriefcaseIcon className="h-8 w-8 text-blue-500 mr-3" />
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Jobs Posted ({jobs.length})
-                </h2>
-              </div>
-              <ul className="space-y-3">
+            <Card>
+              <CardHeader iconColor="#3b82f6">
+                <BriefcaseIcon />
+                <h2>Jobs Posted ({jobs.length})</h2>
+              </CardHeader>
+              <List>
                 {jobs.map((job) => (
-                  <li
-                    key={job._id}
-                    className="bg-gray-50 border border-gray-200 rounded-lg p-3"
-                  >
-                    <p className="text-gray-700 font-semibold">{job.title}</p>
-                    <p className="text-gray-600 text-sm">
-                      Company: {job.company}
-                    </p>
-                  </li>
+                  <JobListItem key={job._id}>
+                    <p>{job.title}</p>
+                    <p>Company: {job.company}</p>
+                  </JobListItem>
                 ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+              </List>
+            </Card>
+          </Grid>
+        </Container>
+      </PageWrapper>
       <Footer />
     </>
   );
