@@ -1,9 +1,9 @@
 import express from "express";
-import Job from "../models/job.js";
+import Job from "../models/Job.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import { authMiddleware, authorizeRoles } from "../middlewares/authMiddleware.js"; // Import authorizeRoles
-import User from "../models/user.js";
+import User from "../models/User.js";
 import { upload } from "../middlewares/uploadMiddleware.js"; // add this at the top
 
 const router = express.Router();
