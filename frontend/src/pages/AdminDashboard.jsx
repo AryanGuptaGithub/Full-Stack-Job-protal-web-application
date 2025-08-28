@@ -150,10 +150,13 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
 
   const fetchAdminData = async () => {
+
+    const BackendURL = process.env.Backend_URL;
+
     try {
       const token = localStorage.getItem("jwt");
-      const usersRes = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/admin/users", { headers: { Authorization: `Bearer ${token}` }});
-      const jobsRes = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/admin/jobs", { headers: { Authorization: `Bearer ${token}` }});
+      const usersRes = await axios.get(`${BackendURL}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` }});
+      const jobsRes = await axios.get(`${BackendURL}/api/admin/jobs`, { headers: { Authorization: `Bearer ${token}` }});
 
       setUsers(usersRes.data.users);
       setJobs(jobsRes.data.jobs);

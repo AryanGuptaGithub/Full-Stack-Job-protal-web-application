@@ -165,7 +165,7 @@ const JobseekerDashboard = () => {
 
     const fetchApplications = async () => {
       try {
-        const res = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/applications/mine", {
+        const res = await axios.get(`${BackendURL}api/applications/mine`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setApplications(res.data.applications.slice(0, 3));
@@ -176,7 +176,7 @@ const JobseekerDashboard = () => {
 
     const fetchRecommendations = async () => {
       try {
-        const res = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/jobs", {
+        const res = await axios.get(`${BackendURL}/api/jobs`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const appliedJobIds = new Set(applications.map((a) => a.job));

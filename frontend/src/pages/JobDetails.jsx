@@ -125,7 +125,7 @@ const JobDetails = () => {
 
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/jobs/${id}`);
+        const response = await axios.get(`${BackendURL}/api/jobs/${id}`);
         setJob(response.data);
       } catch (err) {
         setError("Job not found.");
@@ -157,7 +157,7 @@ const JobDetails = () => {
       formData.append("applicant", storedUser._id);
 
       const response = await axios.post(
-        `https://full-stack-job-protal-web-application.onrender.com/api/applications/${job._id}`,
+        `${BackendURL}/api/applications/${job._id}`,
         formData,
         {
           headers: {
@@ -179,7 +179,7 @@ const JobDetails = () => {
   const handleDeleteJob = async () => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        await axios.delete(`https://full-stack-job-protal-web-application.onrender.com/api/jobs/${job._id}`, {
+        await axios.delete(`${BackendURL}/api/jobs/${job._id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
         });
         toast.success("Job deleted successfully!");

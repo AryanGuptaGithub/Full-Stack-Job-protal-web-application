@@ -113,7 +113,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://full-stack-job-protal-web-application.onrender.com/api/auth/register", formData);
+      await axios.post(`${BackendURL}/api/auth/register`, formData);
       alert("Registration successful! Please login.");
       navigate("/login");
     } catch (err) {

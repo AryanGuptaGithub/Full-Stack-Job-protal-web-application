@@ -153,7 +153,7 @@ const MyApplications = () => {
                 </p>
 
                 <ResumeLink
-                  href={` https://full-stack-job-protal-web-application.onrender.com/${app.resume}`}
+                  href={`${BackendURL}/${app.resume}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

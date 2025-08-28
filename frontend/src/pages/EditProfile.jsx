@@ -142,7 +142,7 @@ const EditProfile = () => {
       const fetchProfile = async () => {
         try {
             const token = localStorage.getItem("jwt");
-            const res = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/", {
+            const res = await axios.get(`${BackendURL}/api/`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const userData = res.data;
@@ -169,7 +169,7 @@ const EditProfile = () => {
             if (resume) formData.append("resume", resume);
             if (password) formData.append("password", password);
 
-            const res = await axios.put("https://full-stack-job-protal-web-application.onrender.com/api/profile/update", formData, { 
+            const res = await axios.put(`${BackendURL}/api/profile/update`, formData, { 
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data",

@@ -87,7 +87,7 @@ const EditApplication = () => {
       try {
         const token = localStorage.getItem("jwt");
         const res = await axios.get(
-          `https://full-stack-job-protal-web-application.onrender.com/api/applications/${applicationId}`,
+          `${BackendURL}/api/applications/${applicationId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -113,7 +113,7 @@ const EditApplication = () => {
     try {
       const token = localStorage.getItem("jwt");
       await axios.put(
-        `https://full-stack-job-protal-web-application.onrender.com/api/applications/${applicationId}`,
+        `${BackendURL}/api/applications/${applicationId}`,
         formData,
         {
           headers: {

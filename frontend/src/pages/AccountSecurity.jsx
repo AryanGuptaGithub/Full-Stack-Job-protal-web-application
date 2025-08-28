@@ -136,6 +136,8 @@ const AccountSecurity = () => {
     setError("");
     setMessage("");
 
+    const BackendURL = process.env.Backend_URL;
+
     if (password && password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -148,7 +150,7 @@ const AccountSecurity = () => {
       if (password) payload.password = password;
 
       const res = await axios.put(
-        "https://full-stack-job-protal-web-application.onrender.com/api/users/update-security",
+        `${BackendURL}/api/users/update-security`,
         payload,
         {
           headers: {

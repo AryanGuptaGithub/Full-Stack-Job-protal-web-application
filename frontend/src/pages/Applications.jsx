@@ -118,12 +118,15 @@ const Applications = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [error, setError] = useState("");
 
+  const BackendURL = process.env.Backend_URL;
+
+
   useEffect(() => {
     const fetchApplications = async () => {
       try {
         const token = localStorage.getItem("jwt");
         const res = await axios.get(
-          `https://full-stack-job-protal-web-application.onrender.com/api/applications/job/${jobId}`,
+          `${BackendURL}/api/applications/job/${jobId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -151,7 +154,7 @@ const Applications = () => {
 
     try {
       const token = localStorage.getItem("jwt");
-      await axios.delete(`https://full-stack-job-protal-web-application.onrender.com/api/applications/${id}`, {
+      await axios.delete(`${BackendURL}/api/applications/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -206,7 +209,7 @@ const Applications = () => {
 
                 <ActionGroup>
                   <a
-                    href={`https://full-stack-job-protal-web-application.onrender.com/${app.resume}`}
+                    href={`${BackendURL}/${app.resume}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
