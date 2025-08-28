@@ -2,7 +2,7 @@
 import express from "express";
 import multer from "multer";
 import Application from "../models/Applications.js";
-import Job from "../models/job.js";
+import Job from "../models/Job.js";
 import {
   authMiddleware,
   authorizeRoles,
