@@ -4,7 +4,7 @@ const router = express.Router();
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { updateProfile } from "../controllers/profileController.js";
 import { body } from "express-validator"; // Import validation middleware
-import User from "../models/user.js"; // <--- ADD THIS LINE
+import User from "../models/User.js"; // <--- ADD THIS LINE
 
 // Define validation rules for updateProfile
 const profileUpdateValidation = [
