@@ -75,11 +75,13 @@ const MyApplications = () => {
   const [applications, setApplications] = useState([]);
   const [error, setError] = useState("");
 
+    const BackendURL = process.env.Backend_URL;
+
   const fetchApplications = async () => {
     try {
       const token = localStorage.getItem("jwt");
       const res = await axios.get(
-        "http://localhost:5000/api/applications/mine",
+        `${BackendURL}api/applications/mine`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -100,7 +102,7 @@ const MyApplications = () => {
     try {
       const token = localStorage.getItem("jwt");
       await axios.delete(
-        `http://localhost:5000/api/applications/${applicationId}`,
+        `${BackendURL}/api/applications/${applicationId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

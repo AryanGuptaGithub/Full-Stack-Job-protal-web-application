@@ -120,6 +120,8 @@ const RecruiterDashboard = () => {
   const [user, setUser] = useState({});
   const [jobs, setJobs] = useState([]);
 
+  const BackendURL = process.env.Backend_URL;
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) setUser(storedUser);

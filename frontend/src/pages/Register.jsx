@@ -107,6 +107,8 @@ const Register = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const BackendURL = process.env.Backend_URL;
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 

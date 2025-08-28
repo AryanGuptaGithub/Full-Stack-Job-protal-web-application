@@ -138,6 +138,8 @@ const EditProfile = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
+    const BackendURL = process.env.Backend_URL;
+
     useEffect(() => {
       const fetchProfile = async () => {
         try {

@@ -157,6 +157,8 @@ const JobseekerDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
 
+  const BackendURL = process.env.Backend_URL;
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) setUser(storedUser);

@@ -114,6 +114,8 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const BackendURL = process.env.Backend_URL;
+
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {

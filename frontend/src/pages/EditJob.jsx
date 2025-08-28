@@ -117,6 +117,8 @@ const EditJob = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const BackendURL = process.env.Backend_URL;
+
     useEffect(() => {
         const fetchJobDetails = async () => {
             try {

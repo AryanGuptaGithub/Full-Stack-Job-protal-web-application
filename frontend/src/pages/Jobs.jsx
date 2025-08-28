@@ -103,6 +103,8 @@ const Jobs = () => {
   const [maxSalary, setMaxSalary] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const BackendURL = process.env.Backend_URL;
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {

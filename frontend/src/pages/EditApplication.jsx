@@ -82,6 +82,8 @@ const EditApplication = () => {
   const [resume, setResume] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const BackendURL = process.env.Backend_URL;
+
   useEffect(() => {
     const fetchApplication = async () => {
       try {

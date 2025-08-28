@@ -157,6 +157,8 @@ const CreateJob = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
+  const BackendURL = process.env.Backend_URL;
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,

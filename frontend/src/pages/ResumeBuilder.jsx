@@ -87,6 +87,8 @@ const PreviewCard = styled.div`
 const ResumeBuilder = () => {
   const { user } = useAuth();
   const resumeRef = useRef();
+
+  
   
   const [resumeData, setResumeData] = useState({
     personalInfo: {
