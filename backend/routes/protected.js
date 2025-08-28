@@ -1,6 +1,6 @@
 // /backend/models/protected.js
 import express from "express";
-import Job from "../models/job.js";
+import Job from "../models/Job.js";
 import { authMiddleware, authorizeRoles } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
