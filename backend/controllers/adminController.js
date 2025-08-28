@@ -1,6 +1,6 @@
 // ✅ FILE 2: backend/controllers/adminController.js
-import User from "../models/user.js";
-import Job from "../models/job.js";
+import User from "../models/User.js";
+import Job from "../models/Job.js";
 
 // Get all users
 export const getAllUsers = async (req, res) => {
