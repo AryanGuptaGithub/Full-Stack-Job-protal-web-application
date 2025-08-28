@@ -21,10 +21,14 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(upload.any());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173", 
+      "https://full-stack-job-protal-web-applicati.vercel.app"
+    ],
     credentials: true,
   })
 );
+
 
 mongoose
   .connect(process.env.MONGO_URI)
