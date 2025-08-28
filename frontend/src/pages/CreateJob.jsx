@@ -171,7 +171,7 @@ const CreateJob = () => {
     try {
       const token = localStorage.getItem("jwt");
       const response = await axios.post(
-        "http://localhost:5000/api/jobs/create",
+        "https://full-stack-job-protal-web-application.onrender.com/api/jobs/create",
         formData,
         {
           headers: {

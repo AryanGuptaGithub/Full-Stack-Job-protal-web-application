@@ -120,7 +120,7 @@ const EditJob = () => {
     useEffect(() => {
         const fetchJobDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/jobs/${id}`);
+                const response = await axios.get(`https://full-stack-job-protal-web-application.onrender.com/api/jobs/${id}`);
                 setJobData(response.data);
                 setLoading(false);
             } catch (err) {
@@ -144,7 +144,7 @@ const EditJob = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5000/api/jobs/${id}`, jobData, {
+            await axios.put(`https://full-stack-job-protal-web-application.onrender.com/api/jobs/${id}`, jobData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 },

@@ -127,7 +127,7 @@ const RecruiterDashboard = () => {
     const fetchJobs = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const res = await axios.get("http://localhost:5000/api/jobs", {
+        const res = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/jobs", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const postedJobs = res.data.filter(

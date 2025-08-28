@@ -123,7 +123,7 @@ const Applications = () => {
       try {
         const token = localStorage.getItem("jwt");
         const res = await axios.get(
-          `http://localhost:5000/api/applications/job/${jobId}`,
+          `https://full-stack-job-protal-web-application.onrender.com/api/applications/job/${jobId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -151,7 +151,7 @@ const Applications = () => {
 
     try {
       const token = localStorage.getItem("jwt");
-      await axios.delete(`http://localhost:5000/api/applications/${id}`, {
+      await axios.delete(`https://full-stack-job-protal-web-application.onrender.com/api/applications/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -206,7 +206,7 @@ const Applications = () => {
 
                 <ActionGroup>
                   <a
-                    href={`http://localhost:5000/${app.resume}`}
+                    href={`https://full-stack-job-protal-web-application.onrender.com/${app.resume}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

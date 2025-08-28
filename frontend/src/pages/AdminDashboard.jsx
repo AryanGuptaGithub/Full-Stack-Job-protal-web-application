@@ -152,8 +152,8 @@ const AdminDashboard = () => {
   const fetchAdminData = async () => {
     try {
       const token = localStorage.getItem("jwt");
-      const usersRes = await axios.get("http://localhost:5000/api/admin/users", { headers: { Authorization: `Bearer ${token}` }});
-      const jobsRes = await axios.get("http://localhost:5000/api/admin/jobs", { headers: { Authorization: `Bearer ${token}` }});
+      const usersRes = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/admin/users", { headers: { Authorization: `Bearer ${token}` }});
+      const jobsRes = await axios.get("https://full-stack-job-protal-web-application.onrender.com/api/admin/jobs", { headers: { Authorization: `Bearer ${token}` }});
 
       setUsers(usersRes.data.users);
       setJobs(jobsRes.data.jobs);

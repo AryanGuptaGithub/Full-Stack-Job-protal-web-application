@@ -148,7 +148,7 @@ const AccountSecurity = () => {
       if (password) payload.password = password;
 
       const res = await axios.put(
-        "http://localhost:5000/api/users/update-security",
+        "https://full-stack-job-protal-web-application.onrender.com/api/users/update-security",
         payload,
         {
           headers: {
