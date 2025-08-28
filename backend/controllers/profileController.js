@@ -1,5 +1,5 @@
 // backend/controllers/profileController.js
-import User from '../models/user.js';
+import User from '../models/User.js';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 
