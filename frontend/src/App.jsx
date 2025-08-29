@@ -30,7 +30,7 @@ const App = () => {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/jobs" element={<Jobs />} />
+        <Route path="api/jobs" element={<Jobs />} />
         <Route path="/jobs/:id" element={<JobDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/applications/:jobId" element={<Applications />} />
