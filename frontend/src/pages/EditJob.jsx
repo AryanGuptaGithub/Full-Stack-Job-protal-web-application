@@ -1,11 +1,11 @@
 // src/pages/EditJob.jsx
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import axios from "axios";
+import { toast } from "react-toastify";
+import styled from "styled-components";
 
 // Styled Components
 const Container = styled.div`
@@ -14,7 +14,7 @@ const Container = styled.div`
   padding: 2rem;
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.h1`
@@ -47,7 +47,7 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border-color: #10b981;
-    box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
   }
 `;
 
@@ -62,7 +62,7 @@ const Textarea = styled.textarea`
   &:focus {
     outline: none;
     border-color: #10b981;
-    box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
   }
 `;
 
@@ -78,16 +78,16 @@ const Button = styled.button`
   border-radius: 0.375rem;
   border: none;
   cursor: pointer;
-  color: ${({ color }) => color || '#fff'};
-  background-color: ${({ bgColor }) => bgColor || '#10b981'};
+  color: ${({ color }) => color || "#fff"};
+  background-color: ${({ bgColor }) => bgColor || "#10b981"};
 
   &:hover {
-    background-color: ${({ hoverColor }) => hoverColor || '#059669'};
+    background-color: ${({ hoverColor }) => hoverColor || "#059669"};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(16,185,129,0.3);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
   }
 `;
 
@@ -104,121 +104,169 @@ const ErrorMsg = styled.div`
 `;
 
 const EditJob = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [jobData, setJobData] = useState({
-        title: '',
-        company: '',
-        location: '',
-        salary: '',
-        description: '',
-        category: ''
-    });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [jobData, setJobData] = useState({
+    title: "",
+    company: "",
+    location: "",
+    salary: "",
+    description: "",
+    category: "",
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
-    useEffect(() => {
-        const fetchJobDetails = async () => {
-            try {
-                const response = await axios.get(`${BackendURL}/api/jobs/${id}`);
-                setJobData(response.data);
-                setLoading(false);
-            } catch (err) {
-                setError('Failed to fetch job details for editing.');
-                setLoading(false);
-                console.error(err);
-                toast.error('Failed to fetch job details.');
-            }
-        };
-        fetchJobDetails();
-    }, [id]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setJobData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        const response = await axios.get(`${BackendURL}/api/jobs/${id}`);
+        setJobData(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch job details for editing.");
+        setLoading(false);
+        console.error(err);
+        toast.error("Failed to fetch job details.");
+      }
     };
+    fetchJobDetails();
+  }, [id]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.put(`${BackendURL}/api/jobs/${id}`, jobData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                },
-            });
-            toast.success('Job updated successfully!');
-            navigate(`/jobs/${id}`);
-        } catch (err) {
-            setError('Failed to update job.');
-            console.error('Error updating job:', err);
-            toast.error(err.response?.data?.message || 'Failed to update job.');
-        }
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setJobData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-    if (loading) {
-        return (
-            <>
-                <Navbar />
-                <Loading>Loading job details for editing...</Loading>
-                <Footer />
-            </>
-        );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${BackendURL}/api/jobs/${id}`, jobData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
+      toast.success("Job updated successfully!");
+      navigate(`/jobs/${id}`);
+    } catch (err) {
+      setError("Failed to update job.");
+      console.error("Error updating job:", err);
+      toast.error(err.response?.data?.message || "Failed to update job.");
     }
+  };
 
-    if (error) {
-        return (
-            <>
-                <Navbar />
-                <ErrorMsg>{error}</ErrorMsg>
-                <Footer />
-            </>
-        );
-    }
-
+  if (loading) {
     return (
-        <>
-            <Navbar />
-            <Container>
-                <Title>Edit Job</Title>
-                <Form onSubmit={handleSubmit}>
-                    <div>
-                        <Label htmlFor="title">Job Title:</Label>
-                        <Input type="text" id="title" name="title" value={jobData.title} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <Label htmlFor="company">Company Name:</Label>
-                        <Input type="text" id="company" name="company" value={jobData.company} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <Label htmlFor="location">Location:</Label>
-                        <Input type="text" id="location" name="location" value={jobData.location} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <Label htmlFor="salary">Salary:</Label>
-                        <Input type="number" id="salary" name="salary" value={jobData.salary} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <Label htmlFor="description">Description:</Label>
-                        <Textarea id="description" name="description" value={jobData.description} onChange={handleChange} rows="4" required />
-                    </div>
-                    <div>
-                        <Label htmlFor="category">Category:</Label>
-                        <Input type="text" id="category" name="category" value={jobData.category} onChange={handleChange} />
-                    </div>
-                    <ButtonGroup>
-                        <Button type="submit">Save Changes</Button>
-                        <Button type="button" bgColor="#d1d5db" color="#374151" hoverColor="#9ca3af" onClick={() => navigate(`/jobs/${id}`)}>Cancel</Button>
-                    </ButtonGroup>
-                </Form>
-            </Container>
-            <Footer />
-        </>
+      <>
+        <Navbar />
+        <Loading>Loading job details for editing...</Loading>
+        <Footer />
+      </>
     );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <ErrorMsg>{error}</ErrorMsg>
+        <Footer />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <Container>
+        <Title>Edit Job</Title>
+        <Form onSubmit={handleSubmit}>
+          <div>
+            <Label htmlFor="title">Job Title:</Label>
+            <Input
+              type="text"
+              id="title"
+              name="title"
+              value={jobData.title}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="company">Company Name:</Label>
+            <Input
+              type="text"
+              id="company"
+              name="company"
+              value={jobData.company}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="location">Location:</Label>
+            <Input
+              type="text"
+              id="location"
+              name="location"
+              value={jobData.location}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="salary">Salary:</Label>
+            <Input
+              type="number"
+              id="salary"
+              name="salary"
+              value={jobData.salary}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="description">Description:</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={jobData.description}
+              onChange={handleChange}
+              rows="4"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="category">Category:</Label>
+            <Input
+              type="text"
+              id="category"
+              name="category"
+              value={jobData.category}
+              onChange={handleChange}
+            />
+          </div>
+          <ButtonGroup>
+            <Button type="submit">Save Changes</Button>
+            <Button
+              type="button"
+              bgColor="#d1d5db"
+              color="#374151"
+              hoverColor="#9ca3af"
+              onClick={() => navigate(`/jobs/${id}`)}
+            >
+              Cancel
+            </Button>
+          </ButtonGroup>
+        </Form>
+      </Container>
+      <Footer />
+    </>
+  );
 };
 
 export default EditJob;

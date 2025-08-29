@@ -107,7 +107,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -130,7 +130,13 @@ const Register = () => {
       <PageWrapper>
         <Card>
           <LeftSide>
-            <h2 style={{ fontSize: "1.875rem", fontWeight: "700", marginBottom: "1rem" }}>
+            <h2
+              style={{
+                fontSize: "1.875rem",
+                fontWeight: "700",
+                marginBottom: "1rem",
+              }}
+            >
               Join JobPortal 🚀
             </h2>
             <p>
@@ -182,7 +188,13 @@ const Register = () => {
               <Button type="submit">Register</Button>
             </Form>
 
-            <p style={{ textAlign: "center", marginTop: "1rem", color: "#4b5563" }}>
+            <p
+              style={{
+                textAlign: "center",
+                marginTop: "1rem",
+                color: "#4b5563",
+              }}
+            >
               Already have an account?{" "}
               <Link to="/login" style={{ color: "#16a34a", fontWeight: "600" }}>
                 Login

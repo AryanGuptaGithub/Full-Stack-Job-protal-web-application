@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import axios from "axios";
-import { UserGroupIcon, BriefcaseIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  UserGroupIcon,
+  BriefcaseIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
 import styled from "styled-components";
 
 // Styled Components
@@ -64,7 +68,7 @@ const Grid = styled.div`
   grid-template-columns: 1fr;
   gap: 2rem;
 
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
 `;
@@ -73,7 +77,7 @@ const Card = styled.div`
   background-color: white;
   padding: 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
 `;
 
 const CardHeader = styled.div`
@@ -150,13 +154,16 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
 
   const fetchAdminData = async () => {
-
-    const BackendURL = process.env.Backend_URL;
+    const BackendURL = import.meta.env.VITE_API_URL;
 
     try {
       const token = localStorage.getItem("jwt");
-      const usersRes = await axios.get(`${BackendURL}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` }});
-      const jobsRes = await axios.get(`${BackendURL}/api/admin/jobs`, { headers: { Authorization: `Bearer ${token}` }});
+      const usersRes = await axios.get(`${BackendURL}/api/admin/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const jobsRes = await axios.get(`${BackendURL}/api/admin/jobs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setUsers(usersRes.data.users);
       setJobs(jobsRes.data.jobs);
@@ -177,7 +184,12 @@ const AdminDashboard = () => {
         <Container>
           <PageTitle>
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354l-2.169 3.04a4 4 0 01-2.121 1.414l-3.04-2.169A4 4 0 014.354 12l3.04 2.169a4 4 0 011.414 2.121l-2.169 3.04A4 4 0 0112 19.646l2.169-3.04a4 4 0 012.121-1.414l3.04 2.169A4 4 0 0119.646 12l-3.04-2.169a4 4 0 01-1.414-2.121l2.169-3.04A4 4 0 0112 4.354z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4.354l-2.169 3.04a4 4 0 01-2.121 1.414l-3.04-2.169A4 4 0 014.354 12l3.04 2.169a4 4 0 011.414 2.121l-2.169 3.04A4 4 0 0112 19.646l2.169-3.04a4 4 0 012.121-1.414l3.04 2.169A4 4 0 0119.646 12l-3.04-2.169a4 4 0 01-1.414-2.121l2.169-3.04A4 4 0 0112 4.354z"
+              />
             </svg>
             Admin Dashboard
           </PageTitle>

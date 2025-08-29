@@ -13,7 +13,7 @@ const Container = styled.div`
   padding: 2rem;
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.h2`
@@ -40,7 +40,7 @@ const Textarea = styled.textarea`
 
   &:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 `;
 
@@ -64,7 +64,7 @@ const SubmitButton = styled.button`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.5);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
 `;
 
@@ -82,7 +82,7 @@ const EditApplication = () => {
   const [resume, setResume] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchApplication = async () => {

@@ -31,7 +31,7 @@ const CardGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 1.5rem;
 
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
@@ -40,7 +40,7 @@ const Card = styled(Link)`
   background-color: ${(props) => props.bg || "#ffffff"};
   color: ${(props) => props.color || "#1f2937"};
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -50,7 +50,7 @@ const Card = styled(Link)`
   transition: box-shadow 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     background-color: ${(props) => props.hoverBg || "#f3f4f6"};
   }
 
@@ -77,7 +77,7 @@ const Card = styled(Link)`
 const Section = styled.div`
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   margin-bottom: 2rem;
 `;
@@ -103,8 +103,9 @@ const List = styled.ul`
   grid-template-columns: 1fr;
   gap: 1rem;
 
-  @media(min-width: 768px) {
-    grid-template-columns: ${(props) => (props.recommendation ? "1fr 1fr" : "1fr")};
+  @media (min-width: 768px) {
+    grid-template-columns: ${(props) =>
+      props.recommendation ? "1fr 1fr" : "1fr"};
   }
 `;
 
@@ -116,7 +117,7 @@ const ListItem = styled.li`
   transition: box-shadow 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   h3 {
@@ -157,7 +158,7 @@ const JobseekerDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -198,8 +199,19 @@ const JobseekerDashboard = () => {
       <PageWrapper>
         <Container>
           <Section>
-            <h1 style={{ fontSize: "2rem", fontWeight: "800", marginBottom: "1.5rem", color: "#1f2937" }}>
-              👋 Welcome, <span style={{ color: "#6366f1" }}>{user?.username || "Jobseeker"}</span>!
+            <h1
+              style={{
+                fontSize: "2rem",
+                fontWeight: "800",
+                marginBottom: "1.5rem",
+                color: "#1f2937",
+              }}
+            >
+              👋 Welcome,{" "}
+              <span style={{ color: "#6366f1" }}>
+                {user?.username || "Jobseeker"}
+              </span>
+              !
             </h1>
             <CardGrid>
               <Card to="/jobs" bg="#eef2ff" hoverBg="#dbeafe" color="#3b82f6">
@@ -207,17 +219,32 @@ const JobseekerDashboard = () => {
                 <h2>🔍 Browse Jobs</h2>
                 <p>Explore all available job listings.</p>
               </Card>
-              <Card to="/my-applications" bg="#ecfdf5" hoverBg="#d1fae5" color="#22c55e">
+              <Card
+                to="/my-applications"
+                bg="#ecfdf5"
+                hoverBg="#d1fae5"
+                color="#22c55e"
+              >
                 <DocumentMagnifyingGlassIcon />
                 <h2>📄 My Applications</h2>
                 <p>Track your submitted applications.</p>
               </Card>
-              <Card to="/edit-profile" bg="#fef3c7" hoverBg="#fef9c3" color="#eab308">
+              <Card
+                to="/edit-profile"
+                bg="#fef3c7"
+                hoverBg="#fef9c3"
+                color="#eab308"
+              >
                 <UserIcon />
                 <h2>👤 Edit Profile</h2>
                 <p>Update your profile details.</p>
               </Card>
-              <Card to="/account-security" bg="#fee2e2" hoverBg="#fecaca" color="#ef4444">
+              <Card
+                to="/account-security"
+                bg="#fee2e2"
+                hoverBg="#fecaca"
+                color="#ef4444"
+              >
                 <ShieldCheckIcon />
                 <h2>🔐 Account Security</h2>
                 <p>Manage your account security.</p>
@@ -228,21 +255,37 @@ const JobseekerDashboard = () => {
           <Section>
             <SectionTitle>📌 Recent Applications</SectionTitle>
             {applications.length === 0 ? (
-              <p style={{ color: "#6b7280" }}>You haven't applied to any jobs yet.</p>
+              <p style={{ color: "#6b7280" }}>
+                You haven't applied to any jobs yet.
+              </p>
             ) : (
               <List>
                 {applications.map((app) => (
                   <ListItem key={app._id}>
                     <h3>{app.job?.title || "Job Title Unavailable"}</h3>
-                    <p><strong>Company:</strong> {app.job?.company || "Company Unavailable"}</p>
-                    <p><strong>Status:</strong> {app.status || "Pending"}</p>
+                    <p>
+                      <strong>Company:</strong>{" "}
+                      {app.job?.company || "Company Unavailable"}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {app.status || "Pending"}
+                    </p>
                     <p style={{ fontSize: "0.75rem", color: "#6b7280" }}>
                       Applied on: {new Date(app.appliedAt).toLocaleDateString()}
                     </p>
                     <Link to={`/applications/edit/${app._id}`}>
                       Edit Application
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      <svg
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
                       </svg>
                     </Link>
                   </ListItem>
@@ -252,7 +295,9 @@ const JobseekerDashboard = () => {
           </Section>
 
           <Section>
-            <SectionTitle iconColor="#facc15"><SparklesIcon /> Recommended Jobs</SectionTitle>
+            <SectionTitle iconColor="#facc15">
+              <SparklesIcon /> Recommended Jobs
+            </SectionTitle>
             {recommendations.length === 0 ? (
               <p style={{ color: "#6b7280" }}>No job recommendations yet.</p>
             ) : (
@@ -260,12 +305,25 @@ const JobseekerDashboard = () => {
                 {recommendations.map((job) => (
                   <ListItem key={job._id}>
                     <h3>{job.title}</h3>
-                    <p><strong>{job.company}</strong> - {job.location}</p>
-                    <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>{job.description}</p>
+                    <p>
+                      <strong>{job.company}</strong> - {job.location}
+                    </p>
+                    <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
+                      {job.description}
+                    </p>
                     <Link to={`/jobs/${job._id}`}>
                       View Details
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <svg
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
                       </svg>
                     </Link>
                   </ListItem>

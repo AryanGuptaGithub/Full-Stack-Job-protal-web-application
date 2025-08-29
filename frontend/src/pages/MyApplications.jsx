@@ -75,17 +75,14 @@ const MyApplications = () => {
   const [applications, setApplications] = useState([]);
   const [error, setError] = useState("");
 
-    const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   const fetchApplications = async () => {
     try {
       const token = localStorage.getItem("jwt");
-      const res = await axios.get(
-        `${BackendURL}api/applications/mine`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.get(`${BackendURL}api/applications/mine`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setApplications(res.data.applications);
     } catch (err) {
       console.error(err);
@@ -101,12 +98,9 @@ const MyApplications = () => {
 
     try {
       const token = localStorage.getItem("jwt");
-      await axios.delete(
-        `${BackendURL}/api/applications/${applicationId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`${BackendURL}/api/applications/${applicationId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       alert("Application deleted");
       fetchApplications();
     } catch (err) {

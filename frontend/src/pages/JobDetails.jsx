@@ -114,7 +114,7 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -154,7 +154,9 @@ const JobDetails = () => {
     try {
       const formData = new FormData();
       formData.append("message", "Looking forward to this role!");
-      const dummyFile = new File(["Dummy Resume"], "resume.pdf", { type: "application/pdf" });
+      const dummyFile = new File(["Dummy Resume"], "resume.pdf", {
+        type: "application/pdf",
+      });
       formData.append("resume", dummyFile);
       formData.append("applicant", storedUser._id);
 
@@ -169,7 +171,9 @@ const JobDetails = () => {
         }
       );
 
-      toast.success(response.data.message || "Application submitted successfully!");
+      toast.success(
+        response.data.message || "Application submitted successfully!"
+      );
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "Failed to apply.");
@@ -193,34 +197,73 @@ const JobDetails = () => {
     }
   };
 
-  if (loading) return <p style={{ textAlign: "center", marginTop: "2rem" }}>Loading job details...</p>;
-  if (error) return <p style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>{error}</p>;
+  if (loading)
+    return (
+      <p style={{ textAlign: "center", marginTop: "2rem" }}>
+        Loading job details...
+      </p>
+    );
+  if (error)
+    return (
+      <p style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>
+        {error}
+      </p>
+    );
 
-  const isRecruiterOwner = storedUser?.role === "recruiter" && storedUser._id === job.postedBy;
+  const isRecruiterOwner =
+    storedUser?.role === "recruiter" && storedUser._id === job.postedBy;
 
   return (
     <>
       <Navbar />
       <Container>
-        <Title >{job.title}</Title>
-        <Info><FaLaptopCode size={40} /> <strong> Company: </strong> &nbsp; { job.company}</Info>
-        <Info><IoLocationOutline size={40} /> <strong> Location: </strong> &nbsp; {job.location}</Info>
-        <Info><RiMoneyRupeeCircleFill size={40} /> <strong> Salary: </strong> &nbsp;  {job.salary ? `₹${job.salary}` : "Not specified"}</Info>
+        <Title>{job.title}</Title>
+        <Info>
+          <FaLaptopCode size={40} /> <strong> Company: </strong> &nbsp;{" "}
+          {job.company}
+        </Info>
+        <Info>
+          <IoLocationOutline size={40} /> <strong> Location: </strong> &nbsp;{" "}
+          {job.location}
+        </Info>
+        <Info>
+          <RiMoneyRupeeCircleFill size={40} /> <strong> Salary: </strong> &nbsp;{" "}
+          {job.salary ? `₹${job.salary}` : "Not specified"}
+        </Info>
 
         <Description>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem" }}>Description</h2>
+          <h2
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: "600",
+              marginBottom: "0.5rem",
+            }}
+          >
+            Description
+          </h2>
           <p>{job.description}</p>
         </Description>
 
-        <ApplyButton onClick={handleApply} disabled={storedUser?.role === "recruiter"}>
+        <ApplyButton
+          onClick={handleApply}
+          disabled={storedUser?.role === "recruiter"}
+        >
           <DocumentPlusIcon className="h-5 w-5" /> Apply Now
         </ApplyButton>
 
         {isRecruiterOwner && (
           <div style={{ marginTop: "1rem", display: "flex" }}>
-            <Link to={`/applications/${job._id}`}><ViewButton><EyeIcon className="h-5 w-5" /> View Applications</ViewButton></Link>
-            <EditButton onClick={handleEditJob}><PencilSquareIcon className="h-5 w-5" /> Edit Job</EditButton>
-            <DeleteButton onClick={handleDeleteJob}><TrashIcon className="h-5 w-5" /> Delete Job</DeleteButton>
+            <Link to={`/applications/${job._id}`}>
+              <ViewButton>
+                <EyeIcon className="h-5 w-5" /> View Applications
+              </ViewButton>
+            </Link>
+            <EditButton onClick={handleEditJob}>
+              <PencilSquareIcon className="h-5 w-5" /> Edit Job
+            </EditButton>
+            <DeleteButton onClick={handleDeleteJob}>
+              <TrashIcon className="h-5 w-5" /> Delete Job
+            </DeleteButton>
           </div>
         )}
       </Container>

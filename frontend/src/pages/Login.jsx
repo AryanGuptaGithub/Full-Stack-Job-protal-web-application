@@ -24,9 +24,9 @@ const Card = styled.div`
   background-color: #ffffff;
   border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     grid-template-columns: 1fr 1fr;
   }
 `;
@@ -130,16 +130,19 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await axios.post(`${BackendURL}/api/auth/login`, formData, { withCredentials: true });
+      const res = await axios.post(`${BackendURL}/api/auth/login`, formData, {
+        withCredentials: true,
+      });
 
       localStorage.setItem("jwt", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -163,7 +166,10 @@ const Login = () => {
               <br />
               Let's find your next opportunity!
             </p>
-            <img src="https://cdn-icons-png.flaticon.com/512/3390/3390472.png" alt="Login" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3390/3390472.png"
+              alt="Login"
+            />
           </LeftSide>
 
           <RightSide>
@@ -171,14 +177,27 @@ const Login = () => {
             {error && <p className="error">{error}</p>}
 
             <Form onSubmit={handleSubmit}>
-              <Input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-              <Input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+              <Input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
 
               <Button type="submit">Login</Button>
 
               <FooterText>
-                Don't have an account?{" "}
-                <Link to="/register">Register</Link>
+                Don't have an account? <Link to="/register">Register</Link>
               </FooterText>
             </Form>
           </RightSide>

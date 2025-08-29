@@ -66,10 +66,10 @@ const FilterContainer = styled.div`
   background-color: #ffffff;
   padding: 1rem;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
@@ -85,10 +85,10 @@ const JobGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 1.5rem;
 
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media(min-width: 1024px) {
+  @media (min-width: 1024px) {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
@@ -103,7 +103,7 @@ const Jobs = () => {
   const [maxSalary, setMaxSalary] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -121,8 +121,10 @@ const Jobs = () => {
 
   const filteredJobs = jobs.filter((job) => {
     return (
-      (!category || job.category?.toLowerCase().includes(category.toLowerCase())) &&
-      (!location || job.location?.toLowerCase().includes(location.toLowerCase())) &&
+      (!category ||
+        job.category?.toLowerCase().includes(category.toLowerCase())) &&
+      (!location ||
+        job.location?.toLowerCase().includes(location.toLowerCase())) &&
       (!minSalary || job.salary >= Number(minSalary)) &&
       (!maxSalary || job.salary <= Number(maxSalary))
     );
@@ -130,7 +132,11 @@ const Jobs = () => {
 
   const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
   const clearFilters = () => {
-    setCategory(""); setLocation(""); setMinSalary(""); setMaxSalary(""); setIsFilterOpen(false);
+    setCategory("");
+    setLocation("");
+    setMinSalary("");
+    setMaxSalary("");
+    setIsFilterOpen(false);
   };
 
   return (
@@ -146,25 +152,79 @@ const Jobs = () => {
 
         {isFilterOpen && (
           <FilterContainer>
-            <Input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
-            <Input type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
-            <Input type="number" placeholder="Min Salary" value={minSalary} onChange={(e) => setMinSalary(e.target.value)} />
-            <Input type="number" placeholder="Max Salary" value={maxSalary} onChange={(e) => setMaxSalary(e.target.value)} />
-            <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'flex-end' }}>
-              <ClearButton onClick={clearFilters}><XMarkIcon className="h-5 w-5" /> Clear Filters</ClearButton>
+            <Input
+              type="text"
+              placeholder="Category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+            <Input
+              type="text"
+              placeholder="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+            <Input
+              type="number"
+              placeholder="Min Salary"
+              value={minSalary}
+              onChange={(e) => setMinSalary(e.target.value)}
+            />
+            <Input
+              type="number"
+              placeholder="Max Salary"
+              value={maxSalary}
+              onChange={(e) => setMaxSalary(e.target.value)}
+            />
+            <div
+              style={{
+                gridColumn: "1/-1",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <ClearButton onClick={clearFilters}>
+                <XMarkIcon className="h-5 w-5" /> Clear Filters
+              </ClearButton>
             </div>
           </FilterContainer>
         )}
 
         <JobGrid>
           {loading ? (
-            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem' }}>Loading jobs...</p>
+            <p
+              style={{
+                gridColumn: "1/-1",
+                textAlign: "center",
+                padding: "2rem",
+              }}
+            >
+              Loading jobs...
+            </p>
           ) : error ? (
-            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: 'red' }}>{error}</p>
+            <p
+              style={{
+                gridColumn: "1/-1",
+                textAlign: "center",
+                padding: "2rem",
+                color: "red",
+              }}
+            >
+              {error}
+            </p>
           ) : filteredJobs.length > 0 ? (
             filteredJobs.map((job) => <JobCard key={job._id} {...job} />)
           ) : (
-            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: '#6b7280' }}>No jobs match your criteria.</p>
+            <p
+              style={{
+                gridColumn: "1/-1",
+                textAlign: "center",
+                padding: "2rem",
+                color: "#6b7280",
+              }}
+            >
+              No jobs match your criteria.
+            </p>
           )}
         </JobGrid>
       </Container>

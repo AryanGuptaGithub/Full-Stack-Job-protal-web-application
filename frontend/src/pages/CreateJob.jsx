@@ -27,7 +27,7 @@ const Container = styled.div`
   /* align-items: center; */
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 `;
 
 const PageHeader = styled.div`
@@ -108,11 +108,11 @@ const FieldWrapper = styled.div`
       border-radius: 0.375rem;
       font-size: 0.875rem;
       outline: none;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
       &:focus {
         border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
       }
     }
 
@@ -129,7 +129,7 @@ const SubmitButton = styled.button`
   padding: 0.75rem;
   border-radius: 0.375rem;
   font-weight: 600;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   border: none;
 
@@ -139,7 +139,7 @@ const SubmitButton = styled.button`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.5);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
 `;
 
@@ -157,7 +157,7 @@ const CreateJob = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -208,7 +208,13 @@ const CreateJob = () => {
   return (
     <>
       <Navbar />
-      <div style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", padding: "3rem 0" }}>
+      <div
+        style={{
+          backgroundColor: "#f3f4f6",
+          minHeight: "100vh",
+          padding: "3rem 0",
+        }}
+      >
         <Container>
           <PageHeader>
             <BriefcaseIcon />

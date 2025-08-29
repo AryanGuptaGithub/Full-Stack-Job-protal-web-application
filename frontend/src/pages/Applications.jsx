@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { DocumentArrowDownIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  DocumentArrowDownIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import styled from "styled-components";
 
 // Styled Components
@@ -26,8 +30,8 @@ const PageTitle = styled.h2`
 const Alert = styled.div`
   background-color: ${(props) =>
     props.type === "error" ? "#fee2e2" : "#fef3c7"};
-  border: 1px solid ${(props) =>
-    props.type === "error" ? "#fca5a5" : "#fcd34d"};
+  border: 1px solid
+    ${(props) => (props.type === "error" ? "#fca5a5" : "#fcd34d")};
   color: ${(props) => (props.type === "error" ? "#b91c1c" : "#b45309")};
   padding: 0.75rem 1rem;
   border-radius: 0.375rem;
@@ -39,7 +43,7 @@ const ApplicationCard = styled.li`
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   margin-bottom: 1.5rem;
 `;
 
@@ -51,8 +55,9 @@ const Field = styled.div`
     font-weight: 600;
   }
 
-  span, p {
-    color: ${(props) => props.gray ? "#4b5563" : "#2563eb"};
+  span,
+  p {
+    color: ${(props) => (props.gray ? "#4b5563" : "#2563eb")};
     font-weight: ${(props) => (props.gray ? "400" : "500")};
   }
 `;
@@ -78,7 +83,8 @@ const ActionGroup = styled.div`
   gap: 1rem;
   margin-top: 1rem;
 
-  a, button {
+  a,
+  button {
     display: inline-flex;
     align-items: center;
     font-size: 0.875rem;
@@ -92,7 +98,8 @@ const ActionGroup = styled.div`
     }
   }
 
-  a:hover, button:hover {
+  a:hover,
+  button:hover {
     text-decoration: underline;
   }
 
@@ -118,8 +125,7 @@ const Applications = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [error, setError] = useState("");
 
-  const BackendURL = process.env.Backend_URL;
-
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -168,7 +174,12 @@ const Applications = () => {
     }
   };
 
-  if (error) return <Alert type="error"><p>{error}</p></Alert>;
+  if (error)
+    return (
+      <Alert type="error">
+        <p>{error}</p>
+      </Alert>
+    );
 
   return (
     <Container>
@@ -178,7 +189,8 @@ const Applications = () => {
 
       {applications.length === 0 ? (
         <Alert type="info">
-          <strong>Info!</strong> <span>No applications received for this job yet.</span>
+          <strong>Info!</strong>{" "}
+          <span>No applications received for this job yet.</span>
         </Alert>
       ) : (
         <ul>

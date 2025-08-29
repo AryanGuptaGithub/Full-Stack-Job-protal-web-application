@@ -4,7 +4,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { UserIcon, EnvelopeIcon, DocumentIcon, LockClosedIcon, CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  UserIcon,
+  EnvelopeIcon,
+  DocumentIcon,
+  LockClosedIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
 import styled from "styled-components";
 
 // Styled Components
@@ -20,7 +27,7 @@ const Container = styled.div`
   background-color: #ffffff;
   padding: 2rem;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 `;
 
 const Header = styled.div`
@@ -76,7 +83,7 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 `;
 
@@ -92,7 +99,7 @@ const Textarea = styled.textarea`
   &:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 `;
 
@@ -124,116 +131,188 @@ const Button = styled.button`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
   }
 `;
 
 const EditProfile = () => {
-    const [user, setUser] = useState({ username: "", email: "" });
-    const [resume, setResume] = useState(null);
-    const [existingResume, setExistingResume] = useState("");
-    const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const navigate = useNavigate();
+  const [user, setUser] = useState({ username: "", email: "" });
+  const [resume, setResume] = useState(null);
+  const [existingResume, setExistingResume] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
 
-    const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
-    useEffect(() => {
-      const fetchProfile = async () => {
-        try {
-            const token = localStorage.getItem("jwt");
-            const res = await axios.get(`${BackendURL}/api/`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const userData = res.data;
-            setUser({ username: userData.username, email: userData.email });
-            setExistingResume(userData.resume || "");
-            setLoading(false);
-        } catch (err) {
-            setError("Failed to load profile");
-            setLoading(false);
-        }
-      };
-      fetchProfile();
-    }, []);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        setSuccessMessage("");
-        try {
-            const token = localStorage.getItem("jwt");
-            const formData = new FormData();
-            formData.append("username", user.username);
-            formData.append("email", user.email);
-            if (resume) formData.append("resume", resume);
-            if (password) formData.append("password", password);
-
-            const res = await axios.put(`${BackendURL}/api/profile/update`, formData, { 
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-
-            setSuccessMessage("Profile updated successfully!");
-            localStorage.setItem("user", JSON.stringify(res.data.updatedUser));
-            setTimeout(() => navigate("/dashboard"), 1500);
-        } catch (err) {
-            setError(err.response?.data?.message || "Failed to update profile");
-        }
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const res = await axios.get(`${BackendURL}/api/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const userData = res.data;
+        setUser({ username: userData.username, email: userData.email });
+        setExistingResume(userData.resume || "");
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load profile");
+        setLoading(false);
+      }
     };
+    fetchProfile();
+  }, []);
 
-    if (loading) return <PageWrapper><p style={{textAlign:"center"}}>Loading profile information...</p></PageWrapper>;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+    try {
+      const token = localStorage.getItem("jwt");
+      const formData = new FormData();
+      formData.append("username", user.username);
+      formData.append("email", user.email);
+      if (resume) formData.append("resume", resume);
+      if (password) formData.append("password", password);
 
+      const res = await axios.put(
+        `${BackendURL}/api/profile/update`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setSuccessMessage("Profile updated successfully!");
+      localStorage.setItem("user", JSON.stringify(res.data.updatedUser));
+      setTimeout(() => navigate("/dashboard"), 1500);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update profile");
+    }
+  };
+
+  if (loading)
     return (
-        <>
-            <Navbar />
-            <PageWrapper>
-                <Container>
-                    <Header>
-                        <UserIcon className="h-10 w-10 text-blue-500 mr-2" />
-                        <Title>Edit Profile</Title>
-                    </Header>
-
-                    {error && <Alert type="error"><ExclamationCircleIcon style={{width:"1.25rem", position:"absolute", right:"0.5rem", top:"50%", transform:"translateY(-50%)"}} />{error}</Alert>}
-                    {successMessage && <Alert type="success"><CheckCircleIcon style={{width:"1.25rem", position:"absolute", right:"0.5rem", top:"50%", transform:"translateY(-50%)"}} />{successMessage}</Alert>}
-
-                    <Form onSubmit={handleSubmit}>
-                        <FieldWrapper>
-                            <Label>Username</Label>
-                            <IconWrapper><UserIcon /></IconWrapper>
-                            <Input type="text" value={user.username} onChange={(e) => setUser({ ...user, username: e.target.value })} required />
-                        </FieldWrapper>
-
-                        <FieldWrapper>
-                            <Label>Email</Label>
-                            <IconWrapper><EnvelopeIcon /></IconWrapper>
-                            <Input type="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} required />
-                        </FieldWrapper>
-
-                        <FieldWrapper>
-                            <Label>New Resume</Label>
-                            {existingResume && <p style={{fontSize:"0.875rem", color:"#6b7280", marginBottom:"0.25rem"}}>Current Resume: {existingResume.split("/").pop()}</p>}
-                            <IconWrapper><DocumentIcon /></IconWrapper>
-                            <Input type="file" onChange={(e) => setResume(e.target.files[0])} accept=".pdf,.doc,.docx" />
-                        </FieldWrapper>
-
-                        <FieldWrapper>
-                            <Label>New Password</Label>
-                            <IconWrapper><LockClosedIcon /></IconWrapper>
-                            <Input type="password" placeholder="Leave blank to keep same" value={password} onChange={(e) => setPassword(e.target.value)} />
-                        </FieldWrapper>
-
-                        <Button type="submit">Save Changes</Button>
-                    </Form>
-                </Container>
-            </PageWrapper>
-            <Footer />
-        </>
+      <PageWrapper>
+        <p style={{ textAlign: "center" }}>Loading profile information...</p>
+      </PageWrapper>
     );
+
+  return (
+    <>
+      <Navbar />
+      <PageWrapper>
+        <Container>
+          <Header>
+            <UserIcon className="h-10 w-10 text-blue-500 mr-2" />
+            <Title>Edit Profile</Title>
+          </Header>
+
+          {error && (
+            <Alert type="error">
+              <ExclamationCircleIcon
+                style={{
+                  width: "1.25rem",
+                  position: "absolute",
+                  right: "0.5rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              />
+              {error}
+            </Alert>
+          )}
+          {successMessage && (
+            <Alert type="success">
+              <CheckCircleIcon
+                style={{
+                  width: "1.25rem",
+                  position: "absolute",
+                  right: "0.5rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              />
+              {successMessage}
+            </Alert>
+          )}
+
+          <Form onSubmit={handleSubmit}>
+            <FieldWrapper>
+              <Label>Username</Label>
+              <IconWrapper>
+                <UserIcon />
+              </IconWrapper>
+              <Input
+                type="text"
+                value={user.username}
+                onChange={(e) => setUser({ ...user, username: e.target.value })}
+                required
+              />
+            </FieldWrapper>
+
+            <FieldWrapper>
+              <Label>Email</Label>
+              <IconWrapper>
+                <EnvelopeIcon />
+              </IconWrapper>
+              <Input
+                type="email"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                required
+              />
+            </FieldWrapper>
+
+            <FieldWrapper>
+              <Label>New Resume</Label>
+              {existingResume && (
+                <p
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "#6b7280",
+                    marginBottom: "0.25rem",
+                  }}
+                >
+                  Current Resume: {existingResume.split("/").pop()}
+                </p>
+              )}
+              <IconWrapper>
+                <DocumentIcon />
+              </IconWrapper>
+              <Input
+                type="file"
+                onChange={(e) => setResume(e.target.files[0])}
+                accept=".pdf,.doc,.docx"
+              />
+            </FieldWrapper>
+
+            <FieldWrapper>
+              <Label>New Password</Label>
+              <IconWrapper>
+                <LockClosedIcon />
+              </IconWrapper>
+              <Input
+                type="password"
+                placeholder="Leave blank to keep same"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FieldWrapper>
+
+            <Button type="submit">Save Changes</Button>
+          </Form>
+        </Container>
+      </PageWrapper>
+      <Footer />
+    </>
+  );
 };
 
 export default EditProfile;

@@ -14,7 +14,11 @@ import styled from "styled-components";
 const PageWrapper = styled.div`
   min-height: 100vh;
   padding: 2.5rem 0;
-  background: linear-gradient(to bottom right, #f3f4f6, #dbeafe); // gray-100 to blue-50
+  background: linear-gradient(
+    to bottom right,
+    #f3f4f6,
+    #dbeafe
+  ); // gray-100 to blue-50
 `;
 
 const Container = styled.div`
@@ -55,7 +59,8 @@ const Grid = styled.div`
 const DashboardLink = styled(Link)`
   background-color: ${(props) =>
     props.bgcolor ? props.bgcolor : "#f3f4f6"}; // default gray-50
-  color: ${(props) => (props.color ? props.color : "#1e3a8a")}; // default blue-700
+  color: ${(props) =>
+    props.color ? props.color : "#1e3a8a"}; // default blue-700
   padding: 1.5rem;
   border-radius: 0.75rem;
   display: flex;
@@ -120,7 +125,7 @@ const RecruiterDashboard = () => {
   const [user, setUser] = useState({});
   const [jobs, setJobs] = useState([]);
 
-  const BackendURL = process.env.Backend_URL;
+  const BackendURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -152,7 +157,10 @@ const RecruiterDashboard = () => {
           <CardWrapper>
             <Title>
               👋 Welcome,{" "}
-              <span style={{ color: "#2563eb" }}>{user?.username || "Recruiter"}</span>!
+              <span style={{ color: "#2563eb" }}>
+                {user?.username || "Recruiter"}
+              </span>
+              !
             </Title>
 
             <Grid>
@@ -194,7 +202,9 @@ const RecruiterDashboard = () => {
           <CardWrapper>
             <SubTitle>📂 Your Posted Jobs</SubTitle>
             {jobs.length === 0 ? (
-              <p style={{ color: "#4b5563" }}>You haven't posted any jobs yet.</p>
+              <p style={{ color: "#4b5563" }}>
+                You haven't posted any jobs yet.
+              </p>
             ) : (
               <JobList>
                 {jobs.map((job) => (

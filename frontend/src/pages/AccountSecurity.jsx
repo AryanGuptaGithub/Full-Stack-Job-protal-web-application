@@ -23,7 +23,7 @@ const FormContainer = styled.div`
   background-color: white;
   padding: 2rem;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 `;
 
 const Header = styled.div`
@@ -91,13 +91,13 @@ const FormGroup = styled.div`
     padding: 0.5rem;
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     font-size: 0.875rem;
 
     &:focus {
       outline: none;
       border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
     }
   }
 `;
@@ -109,7 +109,7 @@ const SubmitButton = styled.button`
   color: white;
   font-weight: 500;
   border-radius: 0.375rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
@@ -120,7 +120,7 @@ const SubmitButton = styled.button`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.5);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
 `;
 
@@ -136,7 +136,7 @@ const AccountSecurity = () => {
     setError("");
     setMessage("");
 
-    const BackendURL = process.env.Backend_URL;
+    const BackendURL = import.meta.env.VITE_API_URL;
 
     if (password && password !== confirmPassword) {
       setError("Passwords do not match.");
