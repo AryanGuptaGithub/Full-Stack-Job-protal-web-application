@@ -140,7 +140,7 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post(`${BackendURL}/api/auth/login`, formData, {
+      const res = await axios.post(`${BackendURL}api/auth/login`, formData, {
         withCredentials: true,
       });
 
