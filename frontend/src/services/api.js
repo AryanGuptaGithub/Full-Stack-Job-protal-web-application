@@ -8,7 +8,7 @@ const api = axios.create({
 
 export const getJobs = async () => {
   try {
-    const res = await api.get("/jobs");
+    const res = await api.get("/api/jobs");
     return res.data;
   } catch (err) {
     console.error("Error fetching jobs:", err);
